@@ -1,13 +1,5 @@
 # 초기설정 공지
 
-### tailwind.config.js
-
-theme-extend 설정을 통해 다음과 같이 px단위 작성시 축약형으로 사용하시면 됩니다.
-
-BEFORE - `<div className="p-[8px] h-[35px] text-[12px] rounded-[5px]">`
-
-AFTER - `<div className="p-8 h-35 text-12 border-2 rounded-5">`
-
 ### index.html
 
 RESET CSS 적용되어 있습니다.
