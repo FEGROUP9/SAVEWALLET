@@ -39,7 +39,8 @@
       "recoil/*": ["src/recoil/*"],
       "types/*": ["src/types/*"],
       "utils/*": ["src/utils/*"],
-      "api/*": ["src/api/*"]
+      "api/*": ["src/api/*"],      "style/*": ["src/style/*"],
+
     }
   },
   "include": [
