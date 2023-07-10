@@ -44,9 +44,14 @@ const Wrapper = styled.div`
       }
     }
   }
+  @media ${props => props.theme.tablet} {
+  }
+  @media ${props => props.theme.laptop} {
+  }
   @media ${props => props.theme.desktop} {
     .fc {
       width: 100%;
+      height: 768px;
       margin: 0 100px;
     }
 
