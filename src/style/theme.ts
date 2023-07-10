@@ -9,9 +9,9 @@ export const size = {
 
 export const theme = {
   mobile: `(max-width: ${size.mobile})`,
-  tabletS: `(max-width: ${size.tabletS})`,
-  tabletM: `(max-width: ${size.tabletM})`,
-  tabletL: `(max-width: ${size.tabletL})`,
-  laptop: `(max-width: ${size.laptop})`,
-  desktop: `(max-width: ${size.desktop})`
+  tabletS: `(min-width:${size.mobile}) and(max-width: ${size.tabletS})`,
+  tabletM: `(min-width:${size.tabletS}) and(max-width: ${size.tabletM})`,
+  tabletL: `(min-width:${size.tabletM}) and(max-width: ${size.tabletL})`,
+  laptop: `(min-width:${size.tabletL}) and (max-width: ${size.laptop})`,
+  desktop: `(min-width: ${size.laptop}) and (max-width: ${size.desktop})`
 }
