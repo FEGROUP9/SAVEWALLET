@@ -1,4 +1,4 @@
-import saveWallet from '@/api/index'
+import saveWallet from './axios'
 
 export const getExpensesSummary = async (
   period: string,
