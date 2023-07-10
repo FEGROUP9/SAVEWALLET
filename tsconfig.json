@@ -27,6 +27,7 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true, //함수에서 return 빼먹으면 에러내기
     "noFallthroughCasesInSwitch": true,
+    "outDir": "./dist",
     "baseUrl": "./", // baseUrl을 기준으로 관련된 위치에 모듈 이름의 경로 매핑 목록을 나열합니다.
     "paths": {
       "@/*": ["src/*"],
@@ -39,8 +40,8 @@
       "recoil/*": ["src/recoil/*"],
       "types/*": ["src/types/*"],
       "utils/*": ["src/utils/*"],
-      "api/*": ["src/api/*"],      "style/*": ["src/style/*"],
-
+      "api/*": ["src/api/*"],
+      "style/*": ["src/style/*"]
     }
   },
   "include": [
