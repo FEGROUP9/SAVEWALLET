@@ -7,7 +7,7 @@ export const getExpensesSummary = async (
   try {
     const response = await saveWallet({
       method: 'GET',
-      url: `/summary?period=${period}&userId=${userId}`
+      url: `/expenses/summary?period=${period}&userId=${userId}`
     })
     return response.data
   } catch (error) {
@@ -17,7 +17,7 @@ export const getExpensesSummary = async (
   }
 }
 
-interface ExpenseSummary {
+export interface ExpenseSummary {
   _id: string
   totalAmount: number
 }
