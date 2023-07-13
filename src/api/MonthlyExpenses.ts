@@ -8,7 +8,7 @@ export const getMonthlyExpenses = async (
   try {
     const response = await saveWallet({
       method: 'GET',
-      url: `/calendar?year=${year}&month=${month}&userId=${userId}`
+      url: `/expenses/calendar?year=${year}&month=${month}&userId=${userId}`
     })
     return response.data
   } catch (error) {
@@ -18,9 +18,14 @@ export const getMonthlyExpenses = async (
   }
 }
 
-interface MonthlyExpenses {
+export interface MonthlyExpenses {
+  [date: string]: Expense[]
+}
+
+export interface Expense {
   amount: number
   userId: string
   category: string
   date: string
+  _id: string
 }
