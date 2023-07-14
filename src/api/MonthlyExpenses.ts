@@ -1,4 +1,4 @@
-import saveWallet from './axios'
+import { saveWallet } from 'api/index'
 
 export const getMonthlyExpenses = async (
   year: number,
@@ -18,11 +18,7 @@ export const getMonthlyExpenses = async (
   }
 }
 
-export interface MonthlyExpenses {
-  [date: string]: Expense[]
-}
-
-export interface Expense {
+interface MonthlyExpenses {
   amount: number
   userId: string
   category: string

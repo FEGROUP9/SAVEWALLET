@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { App, NotFound, ErrorComponent } from 'components/index'
-import { Home, Chart, Calender, List, LogAccount } from 'pages/index'
+import { Home, Chart, Calendar, List, LogAccount } from 'pages/index'
 
 export const router = createBrowserRouter([
   {
@@ -24,8 +24,8 @@ export const router = createBrowserRouter([
         errorElement: <ErrorComponent />
       },
       {
-        path: 'calender',
-        element: <Calender />,
+        path: 'calendar',
+        element: <Calendar />,
         errorElement: <ErrorComponent />
       },
       {
