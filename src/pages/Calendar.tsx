@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import { Header, Footer } from 'components/index'
 import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
-// const events = [{ title: 'Meeting', start: '2023-07-16' }]
 
 const Wrapper = styled.div`
   width: 100%;
@@ -293,21 +292,37 @@ const Wrapper = styled.div`
     }
   }
 `
+const date = new Date()
+const initialYear = date.getFullYear()
+const initialMonth = date.getMonth() + 1
 
 export const Calendar = () => {
-  const [events, setEvents] = useState({})
-  const [yearAndMonth, setYearAndMonth] = useState('')
-  const [year, setYear] = useState(0)
-  const [month, setMonth] = useState(0)
+  const [events, setEvents] = useState([])
+  //캘린더 이전/다음달 변경시 년/월 정보
+  const [year, setYear] = useState(initialYear)
+  const [month, setMonth] = useState(initialMonth)
   const calendarRef = useRef({})
 
   const regex = /[^0-9]/g
-  // const number = parseInt(result)
 
-  //dateClick : 날짜 셀을 클릭할 때 발생하는 이벤트
-  //eventClick : 일정을 클릭할 때 발생하는 이벤트
   useEffect(() => {
-    getMonthlyExpenses(year, month, 'team9')
+    /**날짜별 소비 달력 표시 함수*/
+    const renderDailyExpenses = async () => {
+      let expenses = await getMonthlyExpenses(year, month, 'team9')
+
+      Object.values(expenses).map(i =>
+        i.map(v => {
+          setEvents(prevEvents => [
+            ...prevEvents,
+            {
+              title: v.category,
+              date: v.date
+            }
+          ])
+        })
+      )
+    }
+    renderDailyExpenses()
   }, [year, month])
   return (
     <>
@@ -333,7 +348,6 @@ export const Calendar = () => {
                   calendarRef.current.getApi(), //DOM의 정보 가져옴
                   'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
                 )
-                setYearAndMonth(calendarMonth)
                 setYear(
                   parseInt(
                     calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
@@ -344,6 +358,7 @@ export const Calendar = () => {
                     calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
                   )
                 )
+                setEvents([])
               }
             },
             nextBtn: {
@@ -354,7 +369,6 @@ export const Calendar = () => {
                   calendarRef.current.getApi(), //DOM의 정보 가져옴
                   'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
                 )
-                setYearAndMonth(calendarMonth)
                 setYear(
                   parseInt(
                     calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
@@ -365,11 +379,12 @@ export const Calendar = () => {
                     calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
                   )
                 )
+                setEvents([])
               }
             }
           }}
-          // dateClick={}
           // eventClick={handleEventClick}
+          // 모달 [컨텐츠 - 수정,삭제,취소 버튼]
         />
       </Wrapper>
       <Footer />

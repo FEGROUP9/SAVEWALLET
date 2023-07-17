@@ -10,6 +10,7 @@ export const getMonthlyExpenses = async (
       method: 'GET',
       url: `/expenses/calendar?year=${year}&month=${month}&userId=${userId}`
     })
+    console.log(response.data)
     return response.data
   } catch (error) {
     console.warn(error)
