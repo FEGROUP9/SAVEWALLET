@@ -15,7 +15,20 @@ const Wrapper = styled.div`
   .fc {
     width: 100%;
   }
-
+  .expense {
+    background-color: red;
+    border-color: red;
+  }
+  .income {
+    /* border-color: black; */
+    background-color: green;
+  }
+  .time-logged {
+    border-color: black;
+  }
+  .fc-daygrid-event-dot {
+    border-color: #f4968b;
+  }
   @media ${props => props.theme.mobile} {
     .fc {
       margin: 0 30px;
@@ -133,7 +146,6 @@ const Wrapper = styled.div`
     .fc .fc-daygrid-day-frame {
       padding: 8px;
       height: 50px;
-      width: 60px;
     }
 
     // 날짜  ex) 2일
@@ -305,6 +317,7 @@ export const Calendar = () => {
 
   const regex = /[^0-9]/g
 
+  //수정/삭제시 마지막 초기화 setEvetns('') RECOIL?
   useEffect(() => {
     /**날짜별 소비 달력 표시 함수*/
     const renderDailyExpenses = async () => {
@@ -316,8 +329,9 @@ export const Calendar = () => {
             ...prevEvents,
             {
               title: v.category,
-              date: v.date
-            }
+              date: v.date.replace('Z', '')
+            },
+            { allDay: true, title: v.amount, start: v.date.replace('Z', '') }
           ])
         })
       )
@@ -339,6 +353,16 @@ export const Calendar = () => {
           weekends={true}
           locale="ko"
           events={events}
+          eventClassNames={function (arg) {
+            if (arg.event.allDay && arg.event.title.includes('-')) {
+              return ['expense']
+            }
+            if (arg.event.allDay && arg.event.start) {
+              return ['income']
+            } else {
+              return ['time-logged']
+            }
+          }}
           customButtons={{
             prevBtn: {
               text: '<',
