@@ -1,11 +1,8 @@
-import saveWallet from './axios'
+import { baseInstance } from 'api/index'
 
 export const DeleteExpenseList = async (_id: string): Promise<boolean> => {
   try {
-    await saveWallet({
-      method: 'DELETE',
-      url: `/expenses/${_id}`
-    })
+    await baseInstance.DELETE(`/expenses/${_id}`)
     return true
   } catch (error) {
     console.warn(error)

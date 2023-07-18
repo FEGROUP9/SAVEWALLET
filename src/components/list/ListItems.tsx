@@ -7,9 +7,8 @@ import {
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 import { dateState } from 'src/recoil/DateState'
-import { theme } from 'src/style/theme'
-import { EditModal } from 'src/components/common/EditModal'
-import { DeleteExpense } from 'src/components/common/DeleteItem'
+import { theme } from 'style/index'
+import { EditModal, DeleteExpense } from 'components/common/index'
 
 export default function ListItems() {
   const monthFilter = useRecoilValue<number>(dateState)
@@ -57,42 +56,34 @@ export default function ListItems() {
   }
 
   const handleUpdate = (updatedExpense: Expense) => {
-    // monthExpenses 배열을 map으로 순회하면서 각 날짜별 소비 목록을 업데이트합니다.
     const updatedMonthExpenses = monthExpenses.map(dateExpenses => {
-      // 해당 날짜(dateExpenses)의 소비 목록에 대해 map으로 순회하면서 수정된 목록을 적용합니다.
       const updatedExpenses = dateExpenses.map(expense =>
-        // _id가 일치하는 비용은 수정된 목록으로 업데이트, 그렇지 않은 목록은 그대로 둡니다.
         expense._id === updatedExpense._id ? updatedExpense : expense
       )
-      // 해당 날짜(dateExpenses)의 비용 목록을 수정된 목록으로 대체하고 객체를 반환합니다.
+
       return { ...dateExpenses, [updatedExpenses[0].date]: updatedExpenses }
     })
 
-    // 수정된 monthExpenses로 상태를 업데이트합니다.
     setMonthExpenses(updatedMonthExpenses)
   }
 
   const handleEditExpense = (expense: Expense) => {
-    // 선택된 비용 정보를 selectedExpense 상태로 설정합니다.
     setSelectedExpense(expense)
-    // 모달 창을 엽니다.
+
     setEditModalOpen(true)
   }
 
   const handleDeleteExpense = (deletedExpenseId: string) => {
-    // monthExpenses 배열을 map으로 순회하면서 각 날짜별 소비 목록을 업데이트합니다.
     const updatedMonthExpenses = monthExpenses.map(dateExpenses => {
-      // 해당 날짜(dateExpenses)의 키(date)를 가져옵니다.
       const date = Object.keys(dateExpenses)[0]
-      // 해당 날짜(dateExpenses)의 소비 목록에서 삭제할 소비를 제거합니다.
+
       const updatedExpenses = dateExpenses[date].filter(
         expense => expense._id !== deletedExpenseId
       )
-      // 해당 날짜(dateExpenses)의 소비 목록을 수정된 목록으로 대체하고 객체를 반환합니다.
+
       return { ...dateExpenses, [date]: updatedExpenses }
     })
 
-    // 수정된 monthExpenses로 상태를 업데이트합니다.
     setMonthExpenses(updatedMonthExpenses)
   }
 

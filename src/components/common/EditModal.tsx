@@ -38,9 +38,8 @@ export const EditModal: React.FC<EditModalProps> = ({
     if (typeof res !== 'boolean') {
       closeModal()
       onUpdateExpense(editedExpense)
-    } else {
-      alert('수정 실패')
     }
+    alert('수정 실패')
   }
 
   return (

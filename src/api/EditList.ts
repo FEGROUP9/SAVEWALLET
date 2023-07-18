@@ -1,15 +1,11 @@
-import saveWallet from './axios'
+import { baseInstance } from 'api/index'
 
 export const EditExpenseList = async (
   _id: string,
   updatedExpense: Expense
 ): Promise<Expense | boolean> => {
   try {
-    const response = await saveWallet({
-      method: 'PUT',
-      url: `/expenses/${_id}`,
-      data: updatedExpense
-    })
+    const response = await baseInstance.put(`/expenses/${_id}`, updatedExpense)
 
     return response.data
   } catch (error) {

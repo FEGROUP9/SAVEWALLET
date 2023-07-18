@@ -15,9 +15,8 @@ export const DeleteExpense: React.FC<DeleteExpenseProps> = ({
     const deleteSuccess = await DeleteExpenseList(expenseId)
     if (deleteSuccess) {
       onDelete()
-    } else {
-      alert('삭제 실패')
     }
+    alert('삭제 실패')
   }
 
   return (
