@@ -23,9 +23,10 @@ export interface MonthlyExpenses {
 }
 
 export interface Expense {
+  _id: string
   amount: number
   userId: string
   category: string
   date: string
-  _id: string
+  __v: number
 }
