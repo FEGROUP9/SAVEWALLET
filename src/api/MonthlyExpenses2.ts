@@ -1,10 +1,13 @@
+//home ts오류 수정버전
+//병합충돌날까봐 파일 임시로 따로생성
+
 import { saveWallet } from 'api/index'
 
 export const getMonthlyExpenses = async (
   year: number,
   month: number,
   userId: string
-): Promise<MonthlyExpenses[]> => {
+): Promise<MonthlyExpenses> => {
   try {
     const response = await saveWallet({
       method: 'GET',
@@ -14,7 +17,7 @@ export const getMonthlyExpenses = async (
   } catch (error) {
     console.warn(error)
     console.warn('조회실패')
-    return []
+    return {}
   }
 }
 
@@ -23,9 +26,10 @@ export interface MonthlyExpenses {
 }
 
 export interface Expense {
+  _id: string
   amount: number
   userId: string
   category: string
   date: string
-  _id: string
+  __v: number
 }
