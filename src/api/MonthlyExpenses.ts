@@ -1,4 +1,4 @@
-import saveWallet from './axios'
+import { saveWallet } from 'api/index'
 
 export const getMonthlyExpenses = async (
   year: number,
