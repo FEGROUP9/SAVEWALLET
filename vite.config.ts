@@ -5,5 +5,8 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), removeConsole(), tsconfigPaths()]
+  plugins: [react(), removeConsole(), tsconfigPaths()],
+  server: {
+    port: 3000
+  }
 })
