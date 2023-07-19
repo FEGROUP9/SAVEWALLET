@@ -1,6 +1,8 @@
 import { useRecoilState } from 'recoil'
 import { dateState } from 'src/recoil/DateState'
 import styled from 'styled-components'
+import {} from '@heroicons/react/outline'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
 
 export default function Month() {
   const [monthFilter, setMonthFilter] = useRecoilState<number>(dateState)
@@ -16,9 +18,14 @@ export default function Month() {
 
   return (
     <MonthLabel>
-      <Button onClick={handlePrevMonth}></Button>
+      <MonthButton onClick={handlePrevMonth}>
+        <ChevronLeftIcon />{' '}
+      </MonthButton>
       <CurMonth>{monthFilter}월</CurMonth>
-      <Button onClick={handleNextMonth}></Button>
+      <MonthButton onClick={handleNextMonth}>
+        {' '}
+        <ChevronRightIcon />
+      </MonthButton>
     </MonthLabel>
   )
 }
@@ -30,7 +37,21 @@ const MonthLabel = styled.div`
   margin-top: 50px;
 `
 
-const Button = styled.button``
+const MonthButton = styled.button`
+  margin-right: 5px;
+  text-decoration: none;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: white;
+  svg {
+    width: 20px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+`
+
 const CurMonth = styled.div`
   font-weight: bold;
   font-size: 20px;
