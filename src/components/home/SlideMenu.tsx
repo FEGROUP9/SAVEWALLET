@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import { useRef, useEffect } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
 import { LogoutIcon, LoginIcon } from '@heroicons/react/outline'
 import { UserCircleIcon } from '@heroicons/react/solid'
+import { useRef, useEffect } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 export const SlideMenu = ({ isMenuOpen, handleCloseMenu }) => {
   const outside = useRef<any>()
