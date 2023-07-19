@@ -7,19 +7,11 @@ export default function Month() {
   // 버튼을 누르고나면 리코일에 현재 값이 전달됩니다.
 
   const handlePrevMonth = () => {
-    if (monthFilter === 1) {
-      setMonthFilter(12)
-    } else {
-      setMonthFilter(prevMonth => prevMonth - 1)
-    }
+    setMonthFilter(prevMonth => (prevMonth === 1 ? 12 : prevMonth - 1))
   }
 
   const handleNextMonth = () => {
-    if (monthFilter === 12) {
-      setMonthFilter(1)
-    } else {
-      setMonthFilter(nextMonth => nextMonth + 1)
-    }
+    setMonthFilter(nextMonth => (nextMonth === 12 ? 1 : nextMonth + 1))
   }
 
   return (
