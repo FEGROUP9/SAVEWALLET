@@ -1,8 +1,6 @@
-import {
-  Bars3Icon,
-  ClipboardDocumentListIcon
-} from '@heroicons/react/24/outline'
-import { CalendarIcon, ChartPieIcon } from '@heroicons/react/24/solid'
+import { MenuIcon, CalendarIcon, ViewListIcon } from '@heroicons/react/outline'
+import { ChartBarIcon } from '@heroicons/react/solid'
+
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
@@ -150,7 +148,7 @@ export const Home = () => {
   return (
     <Wrapper>
       <MenuButton onClick={handleOpenMenu}>
-        <Bars3Icon />
+        <MenuIcon />
       </MenuButton>
       <HeadLine>
         지출, 수입을 기록하고 <br />
@@ -183,7 +181,7 @@ export const Home = () => {
       </TabContent>
       <Nav>
         <NavButton to="/list">
-          <ClipboardDocumentListIcon />
+          <ViewListIcon />
           지출 내역
         </NavButton>
         <NavButton to="/calender">
@@ -191,7 +189,7 @@ export const Home = () => {
           달력
         </NavButton>
         <NavButton to="/chart">
-          <ChartPieIcon />
+          <ChartBarIcon />
           지출 분석
         </NavButton>
       </Nav>

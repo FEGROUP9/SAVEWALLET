@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 import { useRef, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import {
-  ArrowLeftOnRectangleIcon,
-  UserCircleIcon
-} from '@heroicons/react/24/solid'
+import { LogoutIcon, LoginIcon } from '@heroicons/react/outline'
+import { UserCircleIcon } from '@heroicons/react/solid'
 
 export const SlideMenu = ({ isMenuOpen, handleCloseMenu }) => {
   const outside = useRef<any>()
@@ -41,14 +39,15 @@ export const SlideMenu = ({ isMenuOpen, handleCloseMenu }) => {
         </MenuItem>
 
         {id ? (
-          <MenuItem>
-            <ArrowLeftOnRectangleIcon />
+          <MenuItem className="logout">
+            <LogoutIcon />
             <LogoutButton onClick={handleClickLogoutButton}>
               로그아웃
             </LogoutButton>
           </MenuItem>
         ) : (
           <MenuItem>
+            <LoginIcon />
             <NavLink
               to="signin"
               className="login">
@@ -83,18 +82,22 @@ const MenuSlide = styled.div`
   top: 0;
   background-color: #fff;
   transition: 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   &.open {
     left: 0;
   }
 `
 
 const MenuItem = styled.div`
-  width: 100%;
+  width: 40%;
   height: 56px;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-items: center;
   &.user-info {
+    width: 100%;
     height: 80px;
     border-bottom: 1px solid #f15441;
     display: flex;
@@ -105,19 +108,22 @@ const MenuItem = styled.div`
       height: 48px;
       margin-right: 5px;
       color: #f15441;
+      position: relative;
+      left: 0;
+    }
+  }
+  .login {
+    text-decoration: none;
+    color: #000;
+    margin-left: 5px;
+    &:hover {
+      color: #f15441;
     }
   }
   svg {
     width: 24px;
     height: 24px;
-    margin-right: 5px;
-  }
-  .login {
-    text-decoration: none;
-    color: #000;
-    &:hover {
-      color: #f15441;
-    }
+    color: #7b7b7b;
   }
 `
 
@@ -125,6 +131,7 @@ const LogoutButton = styled.button`
   border: none;
   outline: none;
   background-color: transparent;
+  font-size: 16px;
   &:hover {
     color: #f15441;
   }
