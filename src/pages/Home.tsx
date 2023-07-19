@@ -85,11 +85,8 @@ export const Home = () => {
     const res = await getMonthlyExpenses(year, monthFilter, userId)
     setMonthExpenses(res)
   }
-  useEffect(() => {
-    getExpenses()
-  }, [monthFilter])
 
-  //오늘 지출,수입
+  //오늘 지출,수입 계산
   const getTodayExpense = () => {
     if (monthExpenses) {
       const todayExpense = monthExpenses[today]
@@ -112,7 +109,7 @@ export const Home = () => {
     }
   }
 
-  //이번달 지출,수입
+  //이번달 지출,수입 계산
   const getMonthExpense = () => {
     let positiveMonthAmount = 0
     let negativeMonthAmount = 0
@@ -133,6 +130,7 @@ export const Home = () => {
   }
 
   useEffect(() => {
+    getExpenses()
     getTodayExpense()
     getMonthExpense()
   })
