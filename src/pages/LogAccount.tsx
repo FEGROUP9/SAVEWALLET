@@ -7,7 +7,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import dayjs, { Dayjs } from 'dayjs'
-import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+import { ArrowLeftIcon } from '@heroicons/react/outline'
 import { logExpense } from '@/api/LogAccount'
 
 export const LogAccount = () => {
