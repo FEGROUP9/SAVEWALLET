@@ -174,27 +174,32 @@ const Wrapper = styled.div`
 `
 
 const ExpenseList = styled.div`
-  width: 80%;
-  height: 720px;
+  width: 60vw;
+  height: 75vh;
   border: 2px solid #5ab400;
   margin: 50px auto;
+  margin-bottom: 0px;
   overflow: auto;
   background-color: white;
   border-radius: 10px;
 
   @media ${theme.laptop} {
-    width: 60%;
+    width: 60vw;
+    height: 75vh;
   }
 
   @media ${theme.desktop} {
-    width: 40%;
+    width: 40vw;
+    height: 75vh;
   }
   @media ${theme.tablet} {
-    width: 70%;
+    width: 70vw;
+    height: 70vh;
   }
 
   @media ${theme.mobile} {
-    width: 90%;
+    width: 90vw;
+    height: 70vh;
   }
 `
 

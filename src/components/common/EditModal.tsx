@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { EditExpenseList, Expense } from 'src/api/EditList'
 
 interface EditModalProps {
@@ -62,6 +62,7 @@ export const EditModal: React.FC<EditModalProps> = ({
     if (typeof res !== 'boolean') {
       closeModal()
       onUpdateExpense(editedExpense)
+      alert('수정 성공')
     } else {
       alert('수정 실패')
     }

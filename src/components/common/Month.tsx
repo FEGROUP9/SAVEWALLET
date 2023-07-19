@@ -1,10 +1,9 @@
 import { useRecoilState } from 'recoil'
 import { dateState } from 'src/recoil/DateState'
 import styled from 'styled-components'
-import {} from '@heroicons/react/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
 
-export default function Month() {
+export function Month() {
   const [monthFilter, setMonthFilter] = useRecoilState<number>(dateState)
   // 버튼을 누르고나면 리코일에 현재 값이 전달됩니다.
 
@@ -23,7 +22,6 @@ export default function Month() {
       </MonthButton>
       <CurMonth>{monthFilter}월</CurMonth>
       <MonthButton onClick={handleNextMonth}>
-        {' '}
         <ChevronRightIcon />
       </MonthButton>
     </MonthLabel>
