@@ -27,13 +27,18 @@ export const router = createBrowserRouter([
         errorElement: <ErrorComponent />
       },
       {
+        path: 'subchart',
+        element: <SubChart />,
+        errorElement: <ErrorComponent />
+      },
+      {
         path: 'list',
         element: <List />,
         errorElement: <ErrorComponent />
       },
       {
-        path: 'calender',
-        element: <Calender />,
+        path: 'calendar',
+        element: <Calendar />,
         errorElement: <ErrorComponent />
       },
       {
