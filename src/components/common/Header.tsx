@@ -3,6 +3,9 @@ import { ChevronLeftIcon } from '@heroicons/react/outline'
 import { useNavigate } from 'react-router-dom'
 const Wrapper = styled.div`
   display: flex;
+  background-color: #f4f4f5;
+  padding: 60px;
+  justify-content: center;
   .backwards {
     width: 24px;
     height: 24px;
@@ -12,7 +15,7 @@ const Wrapper = styled.div`
   }
   .pathname {
     vertical-align: baseline;
-    font-size: 40px;
+    font-size: 50px;
     letter-spacing: -2px;
   }
   @media ${props => props.theme.mobile} {

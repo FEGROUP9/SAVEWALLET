@@ -6,22 +6,25 @@ import styled from 'styled-components'
 import { Header, Footer } from 'components/index'
 import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
+import { ChevronRightIcon } from '@heroicons/react/outline'
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
+  background-color: #f4f4f5;
   .fc {
     width: 100%;
+    background-color: #fff;
   }
   .expense {
-    background-color: red;
-    border-color: red;
+    background-color: #ff4040;
+    border-color: #ff4040;
   }
   .income {
-    /* border-color: black; */
-    background-color: green;
+    border-color: #81c147;
+    background-color: #81c147;
   }
   .time-logged {
     border-color: black;
@@ -29,6 +32,18 @@ const Wrapper = styled.div`
   .fc-daygrid-event-dot {
     border-color: #f4968b;
   }
+  .fc .fc-daygrid-day-frame {
+    overflow: scroll;
+  }
+  .fc .fc-toolbar.fc-header-toolbar {
+    margin: 0;
+    background-color: #f15441;
+    border-radius: 4px 4px 0 0;
+    justify-content: space-between;
+    color: white;
+    font-weight: 600;
+  }
+
   @media ${props => props.theme.mobile} {
     .fc {
       margin: 0 30px;
@@ -36,15 +51,10 @@ const Wrapper = styled.div`
     }
     // toolbar container
     .fc .fc-toolbar.fc-header-toolbar {
-      margin: 0;
       padding: 25px 40px;
-      background-color: #f15441;
       height: 33px;
-      font-weight: 600;
       font-size: 10px;
       line-height: 29px;
-      color: white;
-      border-radius: 20px 20px 0px 0px;
     }
 
     // toolbar 버튼
@@ -104,15 +114,10 @@ const Wrapper = styled.div`
     }
     // toolbar container
     .fc .fc-toolbar.fc-header-toolbar {
-      margin: 0;
       padding: 0 40px;
-      background-color: #f15441;
       height: 63px;
-      font-weight: 600;
       font-size: 12px;
       line-height: 29px;
-      color: white;
-      border-radius: 20px 20px 0px 0px;
     }
 
     // toolbar 버튼
@@ -172,15 +177,10 @@ const Wrapper = styled.div`
     }
     // toolbar container
     .fc .fc-toolbar.fc-header-toolbar {
-      margin: 0;
       padding: 0 40px;
-      background-color: #f15441;
       height: 63px;
-      font-weight: 600;
       font-size: 12px;
       line-height: 29px;
-      color: white;
-      border-radius: 20px 20px 0px 0px;
     }
 
     // toolbar 버튼
@@ -241,16 +241,10 @@ const Wrapper = styled.div`
 
     // toolbar container
     .fc .fc-toolbar.fc-header-toolbar {
-      margin: 0;
       padding: 0 40px;
-      background-color: #f15441;
       height: 77px;
-      font-weight: 600;
       font-size: 12px;
       line-height: 29px;
-      color: white;
-      border-radius: 20px 20px 0px 0px;
-      justify-content: space-evenly;
     }
 
     // toolbar 버튼
@@ -321,7 +315,7 @@ export const Calendar = () => {
   useEffect(() => {
     /**날짜별 소비 달력 표시 함수*/
     const renderDailyExpenses = async () => {
-      let expenses = await getMonthlyExpenses(year, month, 'team9')
+      let expenses = await getMonthlyExpenses(year, month, 'team9-2914827908')
 
       Object.values(expenses).map(i =>
         i.map(v => {
@@ -331,7 +325,11 @@ export const Calendar = () => {
               title: v.category,
               date: v.date.replace('Z', '')
             },
-            { allDay: true, title: v.amount, start: v.date.replace('Z', '') }
+            {
+              allDay: true,
+              title: v.amount.toLocaleString() + '원',
+              start: v.date.replace('Z', '')
+            }
           ])
         })
       )
@@ -346,9 +344,8 @@ export const Calendar = () => {
           ref={calendarRef}
           plugins={[dayGridPlugin, interactionPlugin]}
           headerToolbar={{
-            start: 'prevBtn',
-            center: 'title',
-            end: 'nextBtn'
+            start: 'title',
+            end: 'prevBtn nextBtn'
           }}
           weekends={true}
           locale="ko"
@@ -365,7 +362,7 @@ export const Calendar = () => {
           }}
           customButtons={{
             prevBtn: {
-              text: '<',
+              icon: 'chevron-left',
               click: () => {
                 calendarRef.current.getApi().prev()
                 const calendarMonth = _.get(
@@ -386,7 +383,7 @@ export const Calendar = () => {
               }
             },
             nextBtn: {
-              text: '>',
+              icon: 'chevron-right',
               click: () => {
                 calendarRef.current.getApi().next()
                 const calendarMonth = _.get(
