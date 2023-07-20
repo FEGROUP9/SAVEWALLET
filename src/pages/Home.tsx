@@ -49,7 +49,8 @@ export const Home = () => {
   const USERID = `team9-${id}`
   //로그인 병합전 테스트용
   //병합 후 받아오는 아이디로 변경
-  //const USERID = `team9-2914827908`
+  // const id = 2914827908
+  // const USERID = `team9-2914827908`
 
   const monthFilter = useRecoilValue<number>(dateState)
   const [monthAmount, setMonthAmount] = useState<MonthlyExpenses>({})
@@ -158,7 +159,7 @@ export const Home = () => {
       if (target == '지출 내역') {
         navigate('/list')
       } else if (target == '달력') {
-        navigate('/calender')
+        navigate('/calendar')
       } else if (target == '지출 분석') {
         navigate('/chart')
       } else if (target == '+ 내역 추가') {
