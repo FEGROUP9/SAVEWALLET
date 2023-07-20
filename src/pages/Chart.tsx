@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react'
-import { Footer, Header } from 'src/components'
+import { Header, Footer } from 'src/components'
 import {
   Chart as ChartJS,
   ArcElement,
   Tooltip,
   Legend,
-  ChartData,
-  ChartOptions
+  ChartData
 } from 'chart.js'
 import { Pie } from 'react-chartjs-2'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
-import { fetchExpenses } from 'src/api/FetchCategoryExpenses'
+import { pieOptions } from 'components/chart/PieChartOptions'
+import { ChevronRightIcon } from '@heroicons/react/outline'
+import { fetchExpenses } from 'api/FetchCategoryExpenses'
 import { useRecoilState } from 'recoil'
-import { selectedDateState } from 'src/recoil/SelectedDateState'
+import { selectedDateState } from 'recoil/SelectedDateState'
+// import { selectedCategoryState } from 'recoil/SelectedCategoryState'
+import { useChartHandlers } from 'src/hooks/ChartHooks'
+import { PeriodRange } from 'components/chart/PeriodRange'
 import styled from 'styled-components'
 
 // Chart.js, react-chartjs-2
@@ -21,42 +24,13 @@ import styled from 'styled-components'
 // react-chartjs-2 컴포넌트를 통해 차트에 사용할 수 있음
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels)
 
-// Chart Data 속성 지정
-const options: ChartOptions<'pie'> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: false,
-      labels: {
-        usePointStyle: true,
-        pointStyle: 'line',
-        boxWidth: 13
-      },
-      position: 'right'
-    },
-    datalabels: {
-      display: true,
-      color: '#000',
-      formatter: function (value: any, context: any) {
-        const label = context.chart.data.labels[context.dataIndex]
-        // const formattedVal = Intl.NumberFormat('en-US', {
-        //   minimumFractionDigits: 2
-        // }).format(value)
-
-        return `${label}`
-      }
-    }
-  }
-}
-
 // Styled-components 스타일링
 const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   width: 770px;
-  height: 1000px;
+  background-color: blanchedalmond;
 
   /* @media ${props => props.theme.mobile} {
   }
@@ -69,28 +43,68 @@ const Wrapper = styled.main`
 
   @media ${props => props.theme.desktop} {
   } */
+`
 
-  h1 {
-    font-size: 30px;
-    margin-bottom: 40px;
+const ChartTitle = styled.h2`
+  display: inline-block;
+  margin: 30px 0;
+  font-weight: 700;
+  font-size: 26px;
+`
+
+const IncomeExpensesFilter = styled.form`
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+`
+
+const IncomesOptions = styled.span`
+  margin-right: 20px;
+  font-size: 20px;
+`
+
+const ExpensesOptions = styled.span`
+  font-size: 20px;
+`
+
+const ChartContainer = styled.figure`
+  margin-bottom: 30px;
+`
+
+const ChartList = styled.section`
+  display: flex;
+  flex-direction: column;
+`
+const ListTotalExpenses = styled.h3`
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 2px solid #000;
+  font-size: 20px;
+`
+
+const ListItem = styled.li`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #000;
+  font-size: 20px;
+
+  h3 {
+    flex: 1;
+    position: relative;
+    left: 20px;
   }
 
   p {
-    font-size: 25px;
+    margin-right: 20px;
   }
 `
 
-const SelectedRange = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-`
-
-const StyledChevronLeftIcon = styled(ChevronLeftIcon)`
-  width: 40px;
-`
-
-const StyledChevronRightIcon = styled(ChevronRightIcon)`
-  width: 40px;
+const NavIcon = styled(ChevronRightIcon)`
+  width: 30px;
 `
 
 // Chart Page Component
@@ -106,39 +120,37 @@ export const Chart = () => {
   )
 
   // 차트 하단에 출력될 카테고리별 수입, 지출 내역
-  const [categoryList, setCategoryList] = useState<
-    { id: string; category: string; amount: number }[]
-  >([])
+  const [categoryList, setCategoryList] = useState<{
+    [category: string]: number
+  }>({})
 
-  // 월별 Filtering - onClick Event Functions
-  const handlePrevMonth = () => {
-    const currentYear = selectedDate.year
-    const currentMonth = selectedDate.month
+  // 수입, 지출 총액 계산
+  const totalAmount = Object.values(categoryList)
+    .filter(amount => amount > 0)
+    .reduce((sum, amount) => sum + amount, 0)
 
-    if (currentMonth === 1) {
-      setSelectedDate({ year: currentYear - 1, month: 12 })
-    } else {
-      setSelectedDate({ year: currentYear, month: currentMonth - 1 })
-    }
-  }
+  // 차트 하단에 출력된 리스트에서 선택한 카테고리 담기
+  // const [selectedCategory, setSelectedCategory] = useRecoilState(
+  //   selectedCategoryState
+  // )
 
-  const handleNextMonth = () => {
-    const currentYear = selectedDate.year
-    const currentMonth = selectedDate.month
-
-    if (currentMonth === 12) {
-      setSelectedDate({ year: currentYear + 1, month: 1 })
-    } else {
-      setSelectedDate({ year: currentYear, month: currentMonth + 1 })
-    }
-  }
+  // ChartHandlers - 월별 Filtering, 총합 가격 순으로 정렬, SubChart 렌더링
+  const {
+    handlePrevMonth,
+    handleNextMonth,
+    sortByAmount,
+    // handleCategoryClick,
+    handleShowSubChart
+  } = useChartHandlers()
 
   useEffect(() => {
     const fetchChartData = async () => {
       try {
+        // 모든 수입, 지출 데이터 가져오기
         const expensesData = await fetchExpenses()
         console.log(expensesData)
 
+        // 수입, 지출 데이터 Filtering - input button
         const filteredData = expensesData.filter(
           item =>
             (chartFilter === 'income' ? item.amount >= 0 : item.amount < 0) &&
@@ -146,12 +158,49 @@ export const Chart = () => {
         )
         console.log(filteredData)
 
+        if (filteredData === null || filteredData.length === 0) {
+          alert(
+            `${selectedDate.year}년 ${selectedDate.month}월의 데이터가 없습니다.
+            \n수입 및 지출 내역을 입력해주세요!`
+          )
+          return
+        }
+
+        // category별로 데이터 집계
+        const aggregatedData = {}
+        filteredData.forEach(item => {
+          const categoryName = item.category
+          const amount = Math.abs(item.amount)
+
+          if (aggregatedData[categoryName]) {
+            aggregatedData[categoryName] += amount
+          } else {
+            aggregatedData[categoryName] = amount
+          }
+        })
+
+        // category 속성 중 메인 카테고리만 추출하여 다시 데이터 집계
+        const mainCategories = Object.keys(aggregatedData).map(
+          category => category.split('.')[0]
+        )
+
+        const aggregatedMainCategories = mainCategories.reduce(
+          (acc, category) => {
+            const amount = aggregatedData[category] || 0
+            acc[category] = (acc[category] || 0) + amount
+            return acc
+          },
+          {}
+        )
+
+        // Chart Data 내용 - Pie Chart
         const data: ChartData<'pie'> = {
-          labels: filteredData.map(item => item.category),
+          // 메인 카테고리를 라벨로 출력
+          labels: Object.keys(aggregatedMainCategories),
           datasets: [
             {
-              label: '# of Votes',
-              data: filteredData.map(item => Math.abs(item.amount)),
+              data: Object.values(aggregatedMainCategories),
+              // 메인 카테고리 데이터 중복 없이 차트 출력
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -173,14 +222,7 @@ export const Chart = () => {
           ]
         }
         setChartData(data)
-        setCategoryList(
-          filteredData.map(item => ({
-            id: item._id || item.id,
-            category: item.category,
-            amount: Math.abs(item.amount)
-            // 수입, 지출에 관계 없이 Chart에서는 모두 양수(절댓값)로 출력
-          }))
-        )
+        setCategoryList(aggregatedMainCategories)
       } catch (error) {
         console.log(error)
       }
@@ -194,50 +236,69 @@ export const Chart = () => {
     <>
       <Header />
       <Wrapper>
-        <h1>카테고리별 수입/지출</h1>
-        <SelectedRange>
-          <StyledChevronLeftIcon onClick={handlePrevMonth} />
-          <p>
-            {selectedDate.year}년 {selectedDate.month}월
-          </p>
-          <StyledChevronRightIcon onClick={handleNextMonth} />
-        </SelectedRange>
-        <div>
-          <input
-            type="radio"
-            id="income"
-            name="filter"
-            value="income"
-            checked={chartFilter === 'income'}
-            onChange={() => setChartFilter('income')}
-          />
-          <label htmlFor="income">수입</label>
-        </div>
-        <div>
-          <input
-            type="radio"
-            id="expenses"
-            name="filter"
-            value="expenses"
-            checked={chartFilter === 'expenses'}
-            onChange={() => setChartFilter('expenses')}
-          />
-          <label htmlFor="expenses">지출</label>
-        </div>
-        {chartData && (
-          <Pie
-            data={chartData}
-            options={options}
-          />
-        )}
-        <ul>
-          {categoryList.map(item => (
-            <li key={item.id}>
-              <span>{item.category}</span>
-              <span>{item.amount}</span>
-            </li>
-          ))}
-        </ul>
+        <ChartTitle>카테고리별 수입·지출</ChartTitle>
+        <PeriodRange
+          selectedDate={selectedDate}
+          handlePrevMonth={handlePrevMonth}
+          handleNextMonth={handleNextMonth}
+        />
+        <IncomeExpensesFilter>
+          <IncomesOptions>
+            <input
+              type="radio"
+              id="income"
+              name="filter"
+              value="income"
+              checked={chartFilter === 'income'}
+              onChange={() => setChartFilter('income')}
+            />
+            <label htmlFor="income">수입</label>
+          </IncomesOptions>
+          <ExpensesOptions>
+            <input
+              type="radio"
+              id="expenses"
+              name="filter"
+              value="expenses"
+              checked={chartFilter === 'expenses'}
+              onChange={() => setChartFilter('expenses')}
+            />
+            <label htmlFor="expenses">지출</label>
+          </ExpensesOptions>
+        </IncomeExpensesFilter>
+        <ChartContainer style={{ width: '100%', height: '600px' }}>
+          {chartData && (
+            <Pie
+              data={chartData}
+              options={pieOptions}
+            />
+          )}
+        </ChartContainer>
+        <ChartList>
+          <ul>
+            {chartFilter === 'income' && (
+              <ListTotalExpenses>
+                <p>전체</p>
+                <span>{totalAmount.toLocaleString()}원</span>
+              </ListTotalExpenses>
+            )}
+            {chartFilter === 'expenses' && (
+              <ListTotalExpenses>
+                <p>전체</p>
+                <span>{totalAmount.toLocaleString()}원</span>
+              </ListTotalExpenses>
+            )}
+            {Object.entries(categoryList)
+              .sort(sortByAmount)
+              .map(([category, amount]) => (
+                <ListItem key={category}>
+                  <h3>{category}</h3>
+                  <p>{amount.toLocaleString()}원</p>
+                  <NavIcon onClick={() => handleShowSubChart(category)} />
+                </ListItem>
+              ))}
+          </ul>
+        </ChartList>
       </Wrapper>
       <Footer />
     </>
