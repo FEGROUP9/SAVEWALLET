@@ -1,5 +1,6 @@
 export * from 'pages/Home'
-export * from 'pages/Calender'
+export * from 'pages/Calendar'
 export * from 'pages/List'
 export * from 'pages/Chart'
+export * from 'pages/SubChart'
 export * from 'pages/LogAccount'
