@@ -1,6 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { App, NotFound, ErrorComponent } from 'components/index'
-import { Home, Chart, Calendar, List, LogAccount } from 'pages/index'
+import {
+  Home,
+  Chart,
+  Calender,
+  List,
+  LogAccount,
+  SignIn,
+  KakaoLogin
+} from 'pages/index'
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +27,11 @@ export const router = createBrowserRouter([
         errorElement: <ErrorComponent />
       },
       {
+        path: 'subchart',
+        element: <SubChart />,
+        errorElement: <ErrorComponent />
+      },
+      {
         path: 'list',
         element: <List />,
         errorElement: <ErrorComponent />
@@ -31,6 +44,16 @@ export const router = createBrowserRouter([
       {
         path: 'logaccount',
         element: <LogAccount />,
+        errorElement: <ErrorComponent />
+      },
+      {
+        path: 'signin',
+        element: <SignIn />,
+        errorElement: <ErrorComponent />
+      },
+      {
+        path: 'kakaoLogin',
+        element: <KakaoLogin />,
         errorElement: <ErrorComponent />
       }
     ]
