@@ -4,7 +4,7 @@ import { ChartBarIcon } from '@heroicons/react/solid'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   getMonthlyExpenses,
   MonthlyExpenses,
@@ -41,8 +41,8 @@ export const Home = () => {
   // useEffect(() => {
   //   getUserid()
   // })
-
-  //const id = localStorage.getItem('id')
+  const navigate = useNavigate()
+  const id = localStorage.getItem('id')
   // const USERID = `team9-${id}`
 
   //로그인 병합전 테스트용
@@ -127,11 +127,12 @@ export const Home = () => {
     setthisMonthIncome(positiveMonthAmount)
   }
 
-  useEffect(() => {
-    getExpenses()
-    getTodayExpense()
-    getMonthExpense()
-  })
+  //수정중,,
+  // useEffect(() => {
+  //   getExpenses()
+  //   getTodayExpense()
+  //   getMonthExpense()
+  // }, [])
 
   const handleSelectTab = (index: number) => {
     clickTab(index)
@@ -143,6 +144,23 @@ export const Home = () => {
 
   const handleCloseMenu = () => {
     setisMenuOpen(false)
+  }
+
+  const handleClickNavButton = event => {
+    if (id) {
+      const target = event.currentTarget.innerText
+      if (target == '지출 내역') {
+        navigate('/list')
+      } else if (target == '달력') {
+        navigate('/calender')
+      } else if (target == '지출 분석') {
+        navigate('/chart')
+      } else if (target == '+ 내역 추가') {
+        navigate('/logaccount')
+      }
+    } else {
+      alert('로그인이 필요합니다.')
+    }
   }
 
   return (
@@ -180,20 +198,20 @@ export const Home = () => {
         </TabContentItem>
       </TabContent>
       <Nav>
-        <NavButton to="/list">
+        <NavButton onClick={handleClickNavButton}>
           <ViewListIcon />
           지출 내역
         </NavButton>
-        <NavButton to="/calender">
+        <NavButton onClick={handleClickNavButton}>
           <CalendarIcon />
           달력
         </NavButton>
-        <NavButton to="/chart">
+        <NavButton onClick={handleClickNavButton}>
           <ChartBarIcon />
           지출 분석
         </NavButton>
       </Nav>
-      <AddButton to="logaccount">+ 내역 추가</AddButton>
+      <AddButton onClick={handleClickNavButton}>+ 내역 추가</AddButton>
       <SlideMenu
         isMenuOpen={isMenuOpen}
         handleCloseMenu={handleCloseMenu}
@@ -392,7 +410,7 @@ const Nav = styled.div`
   box-sizing: border-box;
 `
 
-const NavButton = styled(NavLink)`
+const NavButton = styled.div`
   display: flex;
   flex-direction: column;
   text-decoration: none;
@@ -411,12 +429,15 @@ const NavButton = styled(NavLink)`
   }
 `
 
-const AddButton = styled(NavLink)`
+const AddButton = styled.button`
+  position: absolute;
+  bottom: 0;
   margin-bottom: 2rem;
   flex-shrink: 0;
   width: 80%;
   height: 64px;
   background-color: #f15441;
+  border: none;
   max-width: 768px;
   font-size: 18px;
   display: flex;
@@ -426,4 +447,13 @@ const AddButton = styled(NavLink)`
   color: #fff;
   border-radius: 6px;
   box-sizing: border-box;
+  @media ${props => props.theme.tablet} {
+    position: relative;
+  }
+  @media ${props => props.theme.laptop} {
+    position: relative;
+  }
+  @media ${props => props.theme.desktop} {
+    position: relative;
+  }
 `
