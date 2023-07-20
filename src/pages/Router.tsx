@@ -3,7 +3,8 @@ import { App, NotFound, ErrorComponent } from 'components/index'
 import {
   Home,
   Chart,
-  Calender,
+  Calendar,
+  SubChart,
   List,
   LogAccount,
   SignIn,
