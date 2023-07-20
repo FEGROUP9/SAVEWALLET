@@ -117,9 +117,15 @@ export default function ListItems() {
                       <MonthDate>
                         {monthFilter}월 {date}일
                       </MonthDate>
-                      <Title style={{ color: 'red' }}>수입: {income}원</Title>
-                      <Title style={{ color: 'blue' }}>지출: {spend}원</Title>
-                      <Title>합계: {income + spend}원</Title>
+                      <Title style={{ color: 'red' }}>
+                        수입 : {income.toLocaleString()}원
+                      </Title>
+                      <Title style={{ color: 'blue' }}>
+                        지출 : <b>{spend.toLocaleString()}</b>원
+                      </Title>
+                      <Title>
+                        합계 : <b>{(income + spend).toLocaleString()}</b>원
+                      </Title>
                     </DateRow>
                     {expenses.map((expense, index) => (
                       <React.Fragment key={expense._id}>
@@ -130,7 +136,7 @@ export default function ListItems() {
                             style={{
                               color: expense.amount > 0 ? 'red' : 'blue'
                             }}>
-                            {expense.amount}원
+                            {expense.amount.toLocaleString()}원
                           </Expenditure>
 
                           <ModifyButton
@@ -176,7 +182,7 @@ const Wrapper = styled.div`
 const ExpenseList = styled.div`
   width: 60vw;
   height: 75vh;
-  border: 2px solid #5ab400;
+  border: 2px solid #000;
   margin: 50px auto;
   margin-bottom: 0px;
   overflow: auto;
@@ -208,6 +214,7 @@ const DateRow = styled.div`
   border-bottom: 2px solid grey;
   display: flex;
   margin: -2px;
+  padding: 10px;
   height: 25px;
   align-items: center;
   justify-content: flex-end;
@@ -231,10 +238,10 @@ const CategoryRow = styled.div`
 `
 
 const Title = styled.span`
-  font-weight: bold;
+  /* font-weight: bold; */
   font-size: 13px;
   width: 120px;
-  font-weight: 500;
+  /* font-weight: 500; */
 
   @media ${theme.desktop} {
     width: 100px;

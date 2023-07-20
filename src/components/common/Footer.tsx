@@ -14,12 +14,14 @@ export const Footer = () => {
       </Title>
       <Title
         onClick={() => navigate('/calendar')}
-        className={location.pathname === '/calender' ? 'active' : ''}>
+        className={location.pathname === '/calendar' ? 'active' : ''}>
         달력
       </Title>
       <Title
         onClick={() => navigate('/chart')}
-        className={location.pathname === '/chart' ? 'active' : ''}>
+        className={
+          location.pathname === '/chart' || '/subchart' ? 'active' : ''
+        }>
         차트
       </Title>
       <Title
@@ -39,17 +41,19 @@ const Wrapper = styled.div`
   left: 0;
   width: 100%;
   margin-bottom: 5px;
+  background-color: #f4f4f5;
 `
 
 const Title = styled.div`
   height: 8vh;
   width: 10vw;
   font-size: 28px;
-  margin: 2px;
+  font-weight: 300;
+  margin: 22px;
   text-align: center;
   line-height: 8vh;
   border-radius: 10px;
-  background-color: #bbb5b5;
+  background-color: #fff;
   &:hover {
     cursor: pointer;
   }
