@@ -1,14 +1,13 @@
-import { saveWallet } from 'api/index'
+import { baseInstance } from 'api/index'
 
 export const getExpensesSummary = async (
   period: string,
   userId: string
 ): Promise<ExpenseSummary[]> => {
   try {
-    const response = await saveWallet({
-      method: 'GET',
-      url: `/expenses/summary?period=${period}&userId=${userId}`
-    })
+    const response = await baseInstance.get(
+      `/expenses/summary?period=${period}&userId=${userId}`
+    )
     return response.data
   } catch (error) {
     console.warn(error)

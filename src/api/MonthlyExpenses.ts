@@ -1,4 +1,4 @@
-import { saveWallet } from 'api/index'
+import { baseInstance } from 'api/index'
 
 export const getMonthlyExpenses = async (
   year: number,
@@ -6,11 +6,9 @@ export const getMonthlyExpenses = async (
   userId: string
 ): Promise<MonthlyExpenses[]> => {
   try {
-    const response = await saveWallet({
-      method: 'GET',
-      url: `/expenses/calendar?year=${year}&month=${month}&userId=${userId}`
-    })
-    console.log(response.data)
+    const response = await baseInstance.get(
+      `/expenses/calendar?year=${year}&month=${month}&userId=${userId}`
+    )
     return response.data
   } catch (error) {
     console.warn(error)
@@ -19,10 +17,15 @@ export const getMonthlyExpenses = async (
   }
 }
 
-interface MonthlyExpenses {
+export interface MonthlyExpenses {
+  [date: string]: Expense[]
+}
+
+export interface Expense {
+  _id: string
   amount: number
   userId: string
   category: string
   date: string
-  _id: string
+  __v: number
 }

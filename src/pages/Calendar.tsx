@@ -6,8 +6,7 @@ import styled from 'styled-components'
 import { Header, Footer } from 'components/index'
 import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
-import { ChevronRightIcon } from '@heroicons/react/outline'
-
+import { EditModal } from 'components/index'
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -307,10 +306,25 @@ export const Calendar = () => {
   //캘린더 이전/다음달 변경시 년/월 정보
   const [year, setYear] = useState(initialYear)
   const [month, setMonth] = useState(initialMonth)
+
+  const [monthExpenses, setMonthExpenses] = useState<MonthlyExpenses[]>([])
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [selectedExpense, setSelectedExpense] = useState<Expense>({} as Expense)
+
   const calendarRef = useRef({})
 
   const regex = /[^0-9]/g
 
+  const handleUpdate = (updatedExpense: Expense) => {
+    const updatedMonthExpenses = monthExpenses.map(dateExpenses => {
+      const updatedExpenses = dateExpenses.map(expense =>
+        expense._id === updatedExpense._id ? updatedExpense : expense
+      )
+
+      return { ...dateExpenses, [updatedExpenses[0].date]: updatedExpenses }
+    })
+    setMonthExpenses(updatedMonthExpenses)
+  }
   //수정/삭제시 마지막 초기화 setEvetns('') RECOIL?
   useEffect(() => {
     /**날짜별 소비 달력 표시 함수*/
@@ -404,9 +418,20 @@ export const Calendar = () => {
               }
             }
           }}
-          // eventClick={handleEventClick}
+          eventClick={() => {
+            setEditModalOpen(true)
+            // handleEditExpense()
+            console.log(calendarRef.current)
+          }}
           // 모달 [컨텐츠 - 수정,삭제,취소 버튼]
         />
+        {editModalOpen && (
+          <EditModal
+            closeModal={() => setEditModalOpen(false)}
+            expense={selectedExpense}
+            onUpdateExpense={handleUpdate}
+          />
+        )}
       </Wrapper>
       <Footer />
     </>
