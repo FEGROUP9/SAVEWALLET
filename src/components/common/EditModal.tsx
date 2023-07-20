@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import styled, { css } from 'styled-components'
+import React, { useState, useEffect } from 'react'
+import styled from 'styled-components'
 import { EditExpenseList, Expense } from 'src/api/EditList'
 
 interface EditModalProps {
@@ -14,14 +14,38 @@ export const EditModal: React.FC<EditModalProps> = ({
   onUpdateExpense
 }) => {
   const [editedExpense, setEditedExpense] = useState<Expense>(expense)
+  const [selectAmount, setSelectAmount] = useState(true)
+
+  useEffect(() => {
+    setSelectAmount(expense.amount >= 0)
+  }, [expense])
+
+  const handleClickAmount = (isExpense: boolean) => {
+    setSelectAmount(isExpense)
+
+    setEditedExpense(prevExpense => ({
+      ...prevExpense,
+      amount: isExpense
+        ? Math.abs(prevExpense.amount)
+        : -Math.abs(prevExpense.amount)
+    }))
+  }
 
   const handleChangeInputEditExpense = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target // input의 name
+    const { name, value } = e.target
     setEditedExpense(prevExpense => ({
       ...prevExpense,
       [name]: value
+    }))
+  }
+
+  const handleChangeAccountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+    setEditedExpense(prevExpense => ({
+      ...prevExpense,
+      account: value
     }))
   }
 
@@ -38,13 +62,28 @@ export const EditModal: React.FC<EditModalProps> = ({
     if (typeof res !== 'boolean') {
       closeModal()
       onUpdateExpense(editedExpense)
+      alert('수정 성공')
+    } else {
+      alert('수정 실패')
     }
-    alert('수정 실패')
   }
 
   return (
     <ModalContainer>
       <ModalContent>
+        <AmountSelect>
+          <Title>분류:</Title>
+          <AmountButton
+            onClick={() => handleClickAmount(true)}
+            className={selectAmount ? 'active' : ''}>
+            수입
+          </AmountButton>
+          <AmountButton
+            onClick={() => handleClickAmount(false)}
+            className={selectAmount ? '' : 'active'}>
+            지출
+          </AmountButton>
+        </AmountSelect>
         <InputWrapper>
           <Title>금액:</Title>
           <input
@@ -54,7 +93,14 @@ export const EditModal: React.FC<EditModalProps> = ({
             onChange={handleChangeInputEditExpense}
           />
         </InputWrapper>
-
+        <InputWrapper>
+          <Title>사용:</Title>
+          <input
+            className="account-input"
+            type="text"
+            onChange={handleChangeAccountInput}
+          />
+        </InputWrapper>
         <InputWrapper>
           <Title>날짜:</Title>
           <input
@@ -66,12 +112,23 @@ export const EditModal: React.FC<EditModalProps> = ({
         </InputWrapper>
         <InputWrapper>
           <Title>항목:</Title>
-          <input
-            type="text"
+          <select
             name="category"
-            value={editedExpense.category}
             onChange={handleChangeInputEditExpense}
-          />
+            value={editedExpense.category} // 기본값 설정
+          >
+            <option value="카테고리">카테고리</option>
+            <option value="식비">식비</option>
+            <option value="생활/건강">생활/건강</option>
+            <option value="쇼핑">쇼핑</option>
+            <option value="교통">교통</option>
+            <option value="주거/통신">주거/통신</option>
+            <option value="금융">금융</option>
+            <option value="문화/여가">문화/여가</option>
+            <option value="교육/학습">교육/학습</option>
+            <option value="자녀/육아">자녀/육아</option>
+            <option value="경조/선물">경조/선물</option>
+          </select>
         </InputWrapper>
         <ButtonWrapper>
           <CancelButton onClick={closeModal}>취소</CancelButton>
@@ -104,7 +161,7 @@ const ModalContent = styled.div`
   background-color: #fff;
   padding: 20px;
   width: 300px;
-  border-radius: 4px;
+  border-radius: 10px;
 `
 
 const InputWrapper = styled.div`
@@ -119,6 +176,19 @@ const InputWrapper = styled.div`
     border-radius: 4px;
     font-size: 16px;
   }
+
+  select {
+    width: 100px;
+    height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+`
+
+const AmountSelect = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
 `
 
 const ButtonWrapper = styled.div`
@@ -131,6 +201,7 @@ const Button = styled.button`
   border: none;
   cursor: pointer;
   font-size: 20px;
+  border-radius: 5px;
 `
 
 const CancelButton = styled(Button)`
@@ -138,3 +209,9 @@ const CancelButton = styled(Button)`
 `
 
 const SaveButton = styled(Button)``
+
+const AmountButton = styled(Button)`
+  &.active {
+    border: 2px solid #f15441;
+  }
+`
