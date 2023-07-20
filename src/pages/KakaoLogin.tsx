@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 const REST_API_KEY = '14a02d3245a9eb48f2c0f540947d62bb'
 //일단 vits 기본 포트로 연결
 //배포후 배포주소로 다시 작성(카카오에서도 등록해야함)
-const REDIRECT_URI = 'http://127.0.0.1:5173/kakaoLogin'
+const REDIRECT_URI = 'http://127.0.0.1:3000/kakaoLogin'
 
 const request = axios.create({
   baseURL: 'https://kauth.kakao.com',
