@@ -29,8 +29,8 @@ export const router = createBrowserRouter([
         errorElement: <ErrorComponent />
       },
       {
-        path: 'calender',
-        element: <Calender />,
+        path: 'calendar',
+        element: <Calendar />,
         errorElement: <ErrorComponent />
       },
       {
