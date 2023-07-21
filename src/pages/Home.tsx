@@ -5,8 +5,6 @@ import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getMonthlyExpenses, MonthlyExpenses } from 'src/api/MonthlyExpenses'
-import { useRecoilValue } from 'recoil'
-import { dateState } from 'src/recoil/DateState'
 import { SlideMenu } from '@/components/home/SlideMenu'
 import axios from 'axios'
 
@@ -15,7 +13,6 @@ export const Home = () => {
   const token = localStorage.getItem('token')
   let id = localStorage.getItem('id')
 
-  const monthFilter = useRecoilValue<number>(dateState)
   const [monthAmount, setMonthAmount] = useState<MonthlyExpenses[]>([])
 
   const now = dayjs()
@@ -57,7 +54,8 @@ export const Home = () => {
   const getExpenses = async id => {
     try {
       const year: number = Number(thisMonth.slice(0, 4))
-      const res = await getMonthlyExpenses(year, monthFilter, `team9-${id}`)
+      const month: number = Number(thisMonth.slice(5, 7))
+      const res = await getMonthlyExpenses(year, month, `team9-${id}`)
       setMonthAmount(res)
     } catch (error) {
       console.error('Error fetching data:', error)
@@ -137,7 +135,6 @@ export const Home = () => {
     setthisMonthIncome(positiveMonthAmount)
   }
 
-  //업데이트 새로고침 해야됨
   useEffect(() => {
     if (Object.keys(monthAmount).length > 0) {
       getTodayExpense()
