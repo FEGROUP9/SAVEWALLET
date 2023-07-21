@@ -200,22 +200,22 @@ const ButtonWrapper = styled.div`
 
 const Button = styled.button`
   background-color: transparent;
-  border: none;
+  border: 1px solid #c4c4c4;
   cursor: pointer;
   font-size: 18px;
   border-radius: 5px;
-  &:hover {
-    color: #fff;
-    background-color: #000;
-    transition: 0.1s ease-in;
-  }
 `
 
 const CancelButton = styled(Button)`
+  padding: 3px 15px;
   margin-right: 10px;
 `
 
-const SaveButton = styled(Button)``
+const SaveButton = styled(Button)`
+  background-color: #000;
+  padding: 3px 15px;
+  color: #fff;
+`
 
 const AmountButton = styled(Button)`
   font-size: 15px;
@@ -223,6 +223,7 @@ const AmountButton = styled(Button)`
   &.active {
     background-color: #f15441;
     margin: 4px;
+    border: none;
     color: #fff;
   }
 `

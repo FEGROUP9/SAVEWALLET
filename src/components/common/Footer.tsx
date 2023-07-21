@@ -55,17 +55,20 @@ const Wrapper = styled.div`
 const Title = styled.div`
   height: 8vh;
   width: 10vw;
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 300;
   margin: 22px;
   text-align: center;
   line-height: 8vh;
   border-radius: 10px;
   background-color: #fff;
+
   &:hover {
     cursor: pointer;
   }
   &.active {
     background-color: #f15441;
+    color: #fff;
+    font-weight: 700;
   }
 `
