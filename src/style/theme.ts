@@ -21,6 +21,9 @@ export const theme = {
     green: '#64e459',
     red: '#fc6262',
     orange: '#fda363',
-    blue: '#50b1f7'
+    blue: '#50b1f7',
+    footer_bg: '#e9ecff',
+    footer_active: '#6471e9',
+    footer_inactive: '#a8a8a9'
   }
 }
