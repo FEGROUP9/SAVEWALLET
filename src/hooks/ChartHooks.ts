@@ -44,7 +44,7 @@ export const useChartHandlers = () => {
   // SubChart 컴포넌트 이동
   const handleShowSubChart = category => {
     setSelectedCategory(category)
-    navigate('/subchart')
+    navigate('/subchart', { state: { category } })
   }
 
   return {
