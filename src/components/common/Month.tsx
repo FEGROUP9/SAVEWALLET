@@ -18,7 +18,7 @@ export function Month() {
   return (
     <MonthLabel>
       <MonthButton onClick={handlePrevMonth}>
-        <ChevronLeftIcon />{' '}
+        <ChevronLeftIcon />
       </MonthButton>
       <CurMonth>{monthFilter}월</CurMonth>
       <MonthButton onClick={handleNextMonth}>
