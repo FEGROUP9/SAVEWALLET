@@ -165,7 +165,7 @@ export default function ListItems() {
                           수입: {formatNumber(income)}원
                         </Title>
                         <Title style={{ color: '#ff4040' }}>
-                          지출: {spend}원
+                          지출: {formatNumber(spend)}원
                         </Title>
                         <Title>합계: {formatNumber(income + spend)}원</Title>
                       </DateRow>
@@ -176,7 +176,7 @@ export default function ListItems() {
                               {getCategoryIncluded(expense) || '카테고리'}
                             </Category>
                             <History>
-                              내역:{' '}
+                              내역:
                               {(getCategoryExcluded(expense) || '없음').replace(
                                 '.',
                                 ''
