@@ -6,9 +6,7 @@ import { selectedCategoryState } from 'recoil/SelectedCategoryState'
 export const useChartHandlers = () => {
   const navigate = useNavigate()
   const [selectedDate, setSelectedDate] = useRecoilState(selectedDateState)
-  const [selectedCategory, setSelectedCategory] = useRecoilState(
-    selectedCategoryState
-  )
+  const [, setSelectedCategory] = useRecoilState(selectedCategoryState)
 
   // 월별 Filtering Handler
   const handlePrevMonth = () => {
