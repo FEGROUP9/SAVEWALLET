@@ -7,18 +7,34 @@ import {
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 import { dateState } from 'src/recoil/DateState'
+import { theme } from 'style/index'
+import { EditModal, DeleteExpense } from 'components/common/index'
+import { PencilAltIcon } from '@heroicons/react/solid'
+import { Loading } from 'components/common/index'
+import { Month } from 'components/common/index'
 
 export default function ListItems() {
   const monthFilter = useRecoilValue<number>(dateState)
   const [monthExpenses, setMonthExpenses] = useState<MonthlyExpenses[]>([])
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [selectedExpense, setSelectedExpense] = useState<Expense>({} as Expense)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const getExpenses = async () => {
       const year: number = new Date().getFullYear()
-      const userId: string = 'team9'
-      const res = await getMonthlyExpenses(year, monthFilter, userId)
-      setMonthExpenses(res) // 리코일값을 받아와 api에 월을 전달하여 불러옵니다.
+      const id = localStorage.getItem('id')
+      const USERID = `team9-${id}`
+      setIsLoading(true)
+
+      const res = await getMonthlyExpenses(year, monthFilter, USERID)
+      setMonthExpenses(res)
+
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 300)
     }
+
     getExpenses()
   }, [monthFilter])
 
@@ -51,48 +67,198 @@ export default function ListItems() {
     }
   }
 
+  const handleUpdate = (updatedExpense: Expense) => {
+    const updatedMonthExpenses = { ...monthExpenses }
+
+    Object.keys(updatedMonthExpenses).forEach(date => {
+      const expenses = updatedMonthExpenses[date].map(expense =>
+        expense._id === updatedExpense._id ? updatedExpense : expense
+      )
+
+      updatedMonthExpenses[date] = expenses
+    })
+
+    setMonthExpenses(updatedMonthExpenses)
+  }
+
+  const handleDeleteExpense = (deletedExpenseId: string) => {
+    const updatedMonthExpenses = { ...monthExpenses }
+
+    Object.keys(updatedMonthExpenses).forEach(date => {
+      const updatedExpenses = updatedMonthExpenses[date].filter(
+        expense => expense._id !== deletedExpenseId
+      )
+
+      updatedMonthExpenses[date] = updatedExpenses
+    })
+
+    setMonthExpenses(updatedMonthExpenses)
+  }
+
+  const handleEditExpense = (expense: Expense) => {
+    setSelectedExpense(expense)
+
+    setEditModalOpen(true)
+  }
+
+  const formatNumber = (number: number) => {
+    return number.toLocaleString()
+  }
+
+  const targetCategories = [
+    '경조/선물',
+    '자녀/육아',
+    '교육/학습',
+    '문화/여가',
+    '금융',
+    '식비',
+    '주거/통신',
+    '교통',
+    '쇼핑',
+    '생활/건강',
+    '카테고리'
+  ]
+
+  const getCategoryIncluded = (expense: Expense): string | null => {
+    const includedCategory = targetCategories.find(category =>
+      expense.category.includes(category)
+    )
+    return includedCategory || null
+  }
+
+  const getCategoryExcluded = (expense: Expense): string | null => {
+    const isExcludedCategory = targetCategories.some(category =>
+      expense.category.includes(category)
+    )
+
+    if (isExcludedCategory) {
+      const excludedCategory = targetCategories.reduce(
+        (acc, category) => acc.replace(category, ''),
+        expense.category
+      )
+      return excludedCategory.trim() || null
+    } else {
+      return expense.category
+    }
+  }
+
   return (
     <Wrapper>
-      {Object.entries(monthExpenses).length > 0 ? (
-        <>
-          {Object.entries(monthExpenses).map(([date, expenses]) => {
-            const { income, spend } = sumAmountByDate(monthExpenses, date)
-            return (
-              <div key={date}>
-                <DateRow>
-                  <MonthDate>
-                    {monthFilter}월 {date}일
-                  </MonthDate>
-                  <Title style={{ color: 'red' }}>수입: {income}</Title>{' '}
-                  <Title style={{ color: 'blue' }}>지출: {spend}</Title>{' '}
-                  <Title>합계: {income + spend}</Title>
-                </DateRow>
-                {expenses.map(expense => (
-                  <CategoryRow key={expense._id}>
-                    <Category>{expense.category}</Category>
-                    <History>내역</History>
-                    <Expenditure
-                      style={{ color: expense.amount > 0 ? 'red' : 'blue' }}>
-                      {expense.amount}
-                    </Expenditure>
-                  </CategoryRow>
-                ))}
-              </div>
-            )
-          })}
-        </>
-      ) : (
-        <ErrorMsg>내역이 없습니다.</ErrorMsg>
-      )}
+      <Month />
+      <ExpenseList>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {Object.keys(monthExpenses).length > 0 ? (
+              <>
+                {Object.keys(monthExpenses).map(date => {
+                  const expenses = monthExpenses[date]
+                  const { income, spend } = sumAmountByDate(monthExpenses, date)
+                  return (
+                    <div key={date}>
+                      <DateRow>
+                        <MonthDate>
+                          {monthFilter}월 {date}일
+                        </MonthDate>
+                        <Title style={{ color: '#81c147' }}>
+                          수입: {formatNumber(income)}원
+                        </Title>
+                        <Title style={{ color: '#ff4040' }}>
+                          지출: {formatNumber(spend)}원
+                        </Title>
+                        <Title>합계: {formatNumber(income + spend)}원</Title>
+                      </DateRow>
+                      {expenses.map((expense, index) => (
+                        <React.Fragment key={expense._id}>
+                          <CategoryRow>
+                            <Category>
+                              {getCategoryIncluded(expense) || '카테고리'}
+                            </Category>
+                            <History>
+                              내역:
+                              {(getCategoryExcluded(expense) || '없음').replace(
+                                '.',
+                                ''
+                              )}
+                            </History>
+                            <Expenditure
+                              style={{
+                                color:
+                                  expense.amount > 0 ? '#81c147' : '#ff4040'
+                              }}>
+                              {formatNumber(expense.amount)}원
+                            </Expenditure>
+
+                            <ModifyButton
+                              onClick={() => handleEditExpense(expense)}>
+                              <PencilAltIcon />
+                            </ModifyButton>
+
+                            <DeleteExpense
+                              expenseId={expense._id}
+                              onDelete={() => handleDeleteExpense(expense._id)}
+                            />
+                          </CategoryRow>
+                          {index < expenses.length - 1 && (
+                            <LineContainer>
+                              <Line />
+                            </LineContainer>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  )
+                })}
+              </>
+            ) : (
+              <ErrorMsg>내역이 없습니다.</ErrorMsg>
+            )}
+            {editModalOpen && (
+              <EditModal
+                closeModal={() => setEditModalOpen(false)}
+                expense={selectedExpense}
+                onUpdateExpense={handleUpdate}
+              />
+            )}
+          </>
+        )}
+      </ExpenseList>
     </Wrapper>
   )
 }
-
 const Wrapper = styled.div`
-  width: 80%;
-  height: 720px;
-  border: 2px solid grey;
+  background-color: #f4f4f5;
+`
+
+const ExpenseList = styled.div`
+  width: 60vw;
+  height: 75vh;
+  border: 2px solid black;
   margin: 50px auto;
+  margin-bottom: 0px;
+  overflow: auto;
+  background-color: white;
+  border-radius: 10px;
+
+  @media ${theme.laptop} {
+    width: 60vw;
+    height: 75vh;
+  }
+
+  @media ${theme.desktop} {
+    width: 40vw;
+    height: 75vh;
+  }
+  @media ${theme.tablet} {
+    width: 70vw;
+    height: 70vh;
+  }
+
+  @media ${theme.mobile} {
+    width: 90vw;
+    height: 70vh;
+  }
 `
 
 const DateRow = styled.div`
@@ -100,15 +266,22 @@ const DateRow = styled.div`
   border-bottom: 2px solid grey;
   display: flex;
   margin: -2px;
+  padding: 10px;
   height: 25px;
   align-items: center;
   justify-content: flex-end;
+  padding: 10px;
 `
 
 const MonthDate = styled.div`
   margin-right: auto;
-  margin-left: 10px;
+  margin-left: 20px;
   font-weight: bold;
+  font-size: 16px;
+
+  @media ${theme.mobile} {
+    font-size: 14px;
+  }
 `
 
 const CategoryRow = styled.div`
@@ -118,24 +291,64 @@ const CategoryRow = styled.div`
 `
 
 const Title = styled.span`
-  font-weight: bold;
-  width: 10%;
+  /* font-weight: bold; */
+  font-size: 13px;
+  width: 120px;
+  /* font-weight: 500; */
+
+  @media ${theme.desktop} {
+    width: 100px;
+  }
+
+  @media ${theme.laptop} {
+    width: 110px;
+  }
+
+  @media ${theme.tablet} {
+    width: 100px;
+  }
+
+  @media ${theme.mobile} {
+    font-size: 12px;
+    width: 90px;
+  }
 `
+
 const Category = styled.div`
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
   margin-right: 10px;
-  color: green;
+  color: white;
+  font-size: 13px;
+  width: 60px;
+  height: 20px;
+  background-color: #81c147;
+  border-radius: 15px;
 `
 
 const History = styled.div`
   font-weight: bold;
   color: grey;
+  font-size: 13px;
+
+  @media ${theme.mobile} {
+    font-size: 12px;
+  }
 `
 
 const Expenditure = styled.div`
   margin-left: auto;
   font-weight: bold;
-  color: blue;
+
+  margin-right: 10px;
+  font-size: 13px;
+  font-weight: 500;
+
+  @media ${theme.mobile} {
+    font-size: 12px;
+  }
 `
 
 const ErrorMsg = styled.div`
@@ -144,4 +357,27 @@ const ErrorMsg = styled.div`
   font-size: 32px;
   justify-content: center;
   margin-top: 50px;
+`
+const Line = styled.hr`
+  width: 90%;
+  border: 1px solid grey;
+  margin: auto 0;
+`
+const LineContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`
+const ModifyButton = styled.button`
+  margin-right: 5px;
+  text-decoration: none;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: white;
+  svg {
+    width: 20px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 `
