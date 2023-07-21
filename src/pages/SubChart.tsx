@@ -12,9 +12,10 @@ import {
   ChartOptions
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { fetchExpenses } from 'src/api/FetchCategoryExpenses'
 import { useRecoilValue } from 'recoil'
-// import { selectedCategoryState } from 'recoil/SelectedCategoryState'
+import { selectedCategoryState } from 'recoil/SelectedCategoryState'
 import styled from 'styled-components'
 
 // Chart.js, react-chartjs-2
@@ -38,14 +39,22 @@ const options: ChartOptions<'bar'> = {
   },
   plugins: {
     legend: {
-      position: 'top' as const
+      position: 'top' as const,
+      labels: {
+        usePointStyle: true,
+        pointStyle: 'rectRounded',
+        boxWidth: 15,
+        font: {
+          size: 15
+        }
+      }
     },
     title: {
       display: true,
       text: '월별 수입 및 지출',
       color: '#000',
       font: {
-        size: 20
+        size: 25
       }
     }
   }
@@ -53,8 +62,21 @@ const options: ChartOptions<'bar'> = {
 
 // styled-components 스타일링
 const Wrapper = styled.main`
-  width: 770px;
-  height: 1000px;
+  margin: 0 auto;
+  width: 100%;
+  height: 600px;
+  background-color: beige;
+`
+
+const ChartContainer = styled.figure`
+  margin-bottom: 30px;
+`
+
+const ChartList = styled.section``
+
+const ListItem = styled.li`
+  display: flex;
+  justify-content: space-around;
 `
 
 // SubChart Page Component
@@ -64,8 +86,8 @@ export const SubChart = () => {
     (number | [number, number] | null)[]
   > | null>(null)
 
-  // const selectedCategory = useRecoilValue(selectedCategoryState)
-  // const [categoryExpenses, setCategoryExpenses] = useState<any[]>([])
+  const selectedCategory = useRecoilValue(selectedCategoryState)
+  const [categoryExpenses, setCategoryExpenses] = useState<any[]>([])
 
   const splitCategory = category => {
     const [primary, secondary] = category.split('.')
@@ -111,8 +133,21 @@ export const SubChart = () => {
           }
         })
 
-        const incomes = transformedExpensesData.filter(item => item.amount >= 0)
-        const expenses = transformedExpensesData.filter(item => item.amount < 0)
+        const filteredCategory = transformedExpensesData.filter(item => {
+          const { primary } = splitCategory(item.category)
+          if (
+            selectedCategory === item.category ||
+            selectedCategory === primary
+          ) {
+            return true
+          }
+          return false
+        })
+        console.log('selected category는?:', selectedCategory)
+        console.log('filtered category는?:', filteredCategory)
+
+        // const incomes = transformedExpensesData.filter(item => item.amount >= 0)
+        // const expenses = transformedExpensesData.filter(item => item.amount < 0)
 
         const data: ChartData<'bar'> = {
           labels: labels,
@@ -136,25 +171,62 @@ export const SubChart = () => {
           ]
         }
 
+        setCategoryExpenses(filteredCategory)
         setSubChartData(data)
         console.log(expensesData)
+        console.log(categoryExpenses)
       } catch (error) {
         console.log(error)
       }
     }
     fetchSubChartData()
-  }, [])
+  }, [selectedCategory])
 
   return (
     <>
       <Header />
       <Wrapper>
-        {subChartData && (
-          <Bar
-            options={options}
-            data={subChartData}
-          />
-        )}
+        <ChartContainer style={{ width: '100%', height: '600px' }}>
+          {subChartData && (
+            <Bar
+              options={{
+                ...options,
+                plugins: {
+                  ...options.plugins,
+                  datalabels: {
+                    display: true,
+                    align: 'end',
+                    anchor: 'end',
+                    color: '#000',
+                    font: {
+                      size: 15
+                    },
+                    formatter: value => {
+                      if (value === 0 || value === null) {
+                        return ''
+                      }
+                      return `${value.toLocaleString()}원`
+                    }
+                  }
+                }
+              }}
+              data={subChartData}
+              plugins={[ChartDataLabels]}
+            />
+          )}
+        </ChartContainer>
+        <ChartList>
+          <ul>
+            {categoryExpenses.map(expense => (
+              <ListItem key={expense.date}>
+                <h3>{expense.date.split('T')[0]}</h3>
+                <p>{expense.category}</p>
+                <p>{expense.subCategory}서브 카테고리 부분</p>
+                <p>{expense.amount.toLocaleString()}원</p>
+              </ListItem>
+            ))}
+          </ul>
+        </ChartList>
       </Wrapper>
       <Footer />
     </>
