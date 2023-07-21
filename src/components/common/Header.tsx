@@ -19,12 +19,46 @@ const Wrapper = styled.div`
     letter-spacing: -2px;
   }
   @media ${props => props.theme.mobile} {
+    .backwards {
+      width: 12px;
+      height: 12px;
+      margin: auto 0;
+      padding: 0 20px;
+      cursor: pointer;
+    }
+    .pathname {
+      font-size: 30px;
+      margin-right: 30px;
+    }
+    padding: 25px;
   }
   @media ${props => props.theme.tablet} {
+    .backwards {
+      width: 16px;
+      height: 16px;
+      margin: auto 0;
+      padding: 0 20px;
+      cursor: pointer;
+    }
+    .pathname {
+      font-size: 40px;
+      margin-right: 30px;
+    }
+    padding: 35px;
   }
   @media ${props => props.theme.laptop} {
-  }
-  @media ${props => props.theme.desktop} {
+    .backwards {
+      width: 20px;
+      height: 20px;
+      margin: auto 0;
+      padding: 0 20px;
+      cursor: pointer;
+    }
+    .pathname {
+      font-size: 50px;
+      margin-right: 30px;
+    }
+    padding: 45px;
   }
 `
 
@@ -35,7 +69,7 @@ export const Header = () => {
       <a
         className="backwards"
         onClick={() => {
-          navigate(-1)
+          navigate('/')
         }}>
         <ChevronLeftIcon />
       </a>
