@@ -1,6 +1,6 @@
 import { atom } from 'recoil'
 
-export const selectedCategoryState = atom<string>({
+export const selectedCategoryState = atom<string | null>({
   key: 'selectedCategoryState',
-  default: ''
+  default: null
 })
