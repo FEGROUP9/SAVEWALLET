@@ -48,6 +48,7 @@ export const EditModal: React.FC<EditModalProps> = ({
   }
 
   const handleClickSaveButton = async () => {
+    //예외처리(수정날짜 유효성검사, 내역(CATEGORY) 미입력, 금액 미입력)
     if (editedExpense.date.trim() === '') {
       alert('다시 입력해주세요.')
       return
@@ -72,7 +73,7 @@ export const EditModal: React.FC<EditModalProps> = ({
     <ModalContainer>
       <ModalContent>
         <AmountSelect>
-          <Title>분류:</Title>
+          <Title>분류 :</Title>
           <AmountButton
             onClick={() => handleClickAmount(true)}
             className={selectAmount ? 'active' : ''}>
@@ -85,7 +86,7 @@ export const EditModal: React.FC<EditModalProps> = ({
           </AmountButton>
         </AmountSelect>
         <InputWrapper>
-          <Title>금액:</Title>
+          <Title>금액 :</Title>
           <input
             type="number"
             name="amount"
@@ -94,7 +95,7 @@ export const EditModal: React.FC<EditModalProps> = ({
           />
         </InputWrapper>
         <InputWrapper>
-          <Title>내역:</Title>
+          <Title>내역 :</Title>
           <input
             className="account-input"
             name="account"
@@ -103,7 +104,7 @@ export const EditModal: React.FC<EditModalProps> = ({
           />
         </InputWrapper>
         <InputWrapper>
-          <Title>날짜:</Title>
+          <Title>날짜 :</Title>
           <input
             type="text"
             name="date"
@@ -112,7 +113,7 @@ export const EditModal: React.FC<EditModalProps> = ({
           />
         </InputWrapper>
         <InputWrapper>
-          <Title>항목:</Title>
+          <Title>항목 :</Title>
           <select
             name="category"
             onChange={handleChangeInputEditExpense}
@@ -160,9 +161,10 @@ const Title = styled.div`
 
 const ModalContent = styled.div`
   background-color: #fff;
-  padding: 20px;
+  padding: 30px;
   width: 300px;
-  border-radius: 10px;
+  line-height: 45px;
+  border-radius: 6px;
 `
 
 const InputWrapper = styled.div`
@@ -199,20 +201,30 @@ const ButtonWrapper = styled.div`
 
 const Button = styled.button`
   background-color: transparent;
-  border: none;
+  border: 1px solid #c4c4c4;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 18px;
   border-radius: 5px;
 `
 
 const CancelButton = styled(Button)`
+  padding: 3px 15px;
   margin-right: 10px;
 `
 
-const SaveButton = styled(Button)``
+const SaveButton = styled(Button)`
+  background-color: #000;
+  padding: 3px 15px;
+  color: #fff;
+`
 
 const AmountButton = styled(Button)`
+  font-size: 15px;
+  margin: 2px;
   &.active {
-    border: 2px solid #f15441;
+    background-color: #f15441;
+    margin: 4px;
+    border: none;
+    color: #fff;
   }
 `
