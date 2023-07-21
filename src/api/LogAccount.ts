@@ -9,6 +9,7 @@ export const logExpense = async (
   try {
     const res = await baseInstance({
       method: 'POST',
+      url: '/expenses',
       data: {
         amount: amount,
         userId: userId,

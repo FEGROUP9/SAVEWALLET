@@ -15,6 +15,7 @@ export const EditModal: React.FC<EditModalProps> = ({
 }) => {
   const [editedExpense, setEditedExpense] = useState<Expense>(expense)
   const [selectAmount, setSelectAmount] = useState(true)
+  const [account, setAccount] = useState('')
 
   useEffect(() => {
     setSelectAmount(expense.amount >= 0)
@@ -43,25 +44,24 @@ export const EditModal: React.FC<EditModalProps> = ({
 
   const handleChangeAccountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
-    setEditedExpense(prevExpense => ({
-      ...prevExpense,
-      account: value
-    }))
+    setAccount(value)
   }
 
   const handleClickSaveButton = async () => {
-    if (
-      editedExpense.category.trim() === '' ||
-      editedExpense.date.trim() === ''
-    ) {
+    if (editedExpense.date.trim() === '') {
       alert('다시 입력해주세요.')
       return
+    }
+
+    const updatedExpense = {
+      ...editedExpense,
+      category: `${editedExpense.category}${account}`
     }
 
     const res = await EditExpenseList(editedExpense._id, editedExpense)
     if (typeof res !== 'boolean') {
       closeModal()
-      onUpdateExpense(editedExpense)
+      onUpdateExpense(updatedExpense)
       alert('수정 성공')
     } else {
       alert('수정 실패')
@@ -94,9 +94,10 @@ export const EditModal: React.FC<EditModalProps> = ({
           />
         </InputWrapper>
         <InputWrapper>
-          <Title>사용:</Title>
+          <Title>내역:</Title>
           <input
             className="account-input"
+            name="account"
             type="text"
             onChange={handleChangeAccountInput}
           />
