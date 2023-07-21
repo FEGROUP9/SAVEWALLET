@@ -30,7 +30,7 @@ const Wrapper = styled.div`
       }
     }
   }
-
+`
 
 export const ErrorComponent = () => {
   return (
