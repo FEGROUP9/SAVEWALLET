@@ -176,7 +176,11 @@ export default function ListItems() {
                               {getCategoryIncluded(expense) || '카테고리'}
                             </Category>
                             <History>
-                              내역: {getCategoryExcluded(expense) || '없음'}
+                              내역:{' '}
+                              {(getCategoryExcluded(expense) || '없음').replace(
+                                '.',
+                                ''
+                              )}
                             </History>
                             <Expenditure
                               style={{
