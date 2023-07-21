@@ -242,7 +242,7 @@ const ExpenseList = styled.div`
   border-radius: 10px;
 
   @media ${theme.laptop} {
-    width: 60vw;
+    width: 50vw;
     height: 75vh;
   }
 
