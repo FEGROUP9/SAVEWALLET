@@ -11,11 +11,11 @@ import { ArrowLeftIcon } from '@heroicons/react/outline'
 import { logExpense } from '@/api/LogAccount'
 
 export const LogAccount = () => {
-  // const id = localStorage.getItem('id')
-  // const USERID = `team9-${id}`
+  const id = localStorage.getItem('id')
+  const USERID = `team9-${id}`
 
   //로그인 병합전 임시
-  const USERID = `team9-2914827908`
+  // const USERID = `team9-2914827908`
 
   const now = dayjs()
   const [today] = useState(now)

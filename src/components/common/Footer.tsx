@@ -4,29 +4,37 @@ import { useNavigate, useLocation } from 'react-router-dom'
 export const Footer = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const pathFinder = (p: string) => {
+    const isCurrent = p === location.pathname
+    if (isCurrent) {
+      return 'active'
+    }
+  }
 
   return (
     <Wrapper>
       <Title
         onClick={() => navigate('/list')}
-        className={location.pathname === '/list' ? 'active' : ''}>
+        className={pathFinder('/list')}>
         내역
       </Title>
       <Title
         onClick={() => navigate('/calendar')}
-        className={location.pathname === '/calendar' ? 'active' : ''}>
+        className={pathFinder('/calendar')}>
         달력
       </Title>
       <Title
         onClick={() => navigate('/chart')}
         className={
-          location.pathname === '/chart' || '/subchart' ? 'active' : ''
+          location.pathname === '/chart'
+            ? pathFinder('/chart')
+            : pathFinder('/subchart')
         }>
         차트
       </Title>
       <Title
         onClick={() => navigate('/logaccount')}
-        className={location.pathname === '/logaccount' ? 'active' : ''}>
+        className={pathFinder('/logaccount')}>
         입력
       </Title>
     </Wrapper>
