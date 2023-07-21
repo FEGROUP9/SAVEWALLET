@@ -11,11 +11,11 @@ import { ArrowLeftIcon } from '@heroicons/react/outline'
 import { logExpense } from '@/api/LogAccount'
 
 export const LogAccount = () => {
-  // const id = localStorage.getItem('id')
-  // const USERID = `team9-${id}`
+  const id = localStorage.getItem('id')
+  const USERID = `team9-${id}`
 
   //로그인 병합전 임시
-  const USERID = `team9-2914827908`
+  //const USERID = `team9-2914827908`
 
   const now = dayjs()
   const [today] = useState(now)
@@ -82,7 +82,6 @@ export const LogAccount = () => {
       selectCategory !== '카테고리' &&
       account.length > 0
     ) {
-      // console.log('완료', calculatedAmount, totalCategory, fullDate)
       requestAddExpense(calculatedAmount, USERID, totalCategory, fullDate)
       navigate('/')
     } else {
@@ -234,9 +233,9 @@ const ExpenseBoard = styled.div`
     font-size: 40px;
     text-align: right;
     width: 100%;
+    border-bottom: 2px solid #f15441;
     &:focus {
       outline: none;
-      border-bottom: 2px solid #f15441;
     }
   }
   .monetary-unit {

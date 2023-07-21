@@ -2,13 +2,9 @@ import { MenuIcon, CalendarIcon, ViewListIcon } from '@heroicons/react/outline'
 import { ChartBarIcon } from '@heroicons/react/solid'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  getMonthlyExpenses,
-  MonthlyExpenses,
-  Expense
-} from 'src/api/MonthlyExpenses2'
+import { getMonthlyExpenses, MonthlyExpenses } from 'src/api/MonthlyExpenses'
 import { useRecoilValue } from 'recoil'
 import { dateState } from 'src/recoil/DateState'
 import { SlideMenu } from '@/components/home/SlideMenu'
@@ -34,6 +30,8 @@ export const Home = () => {
     } catch (error) {
       console.warn(error)
       console.warn('fail')
+      alert('로그인이 필요합니다')
+      navigate('/signin')
       return false
     }
   }
@@ -53,7 +51,7 @@ export const Home = () => {
   // const USERID = `team9-2914827908`
 
   const monthFilter = useRecoilValue<number>(dateState)
-  const [monthAmount, setMonthAmount] = useState<MonthlyExpenses>({})
+  const [monthAmount, setMonthAmount] = useState<MonthlyExpenses[]>([])
 
   const now = dayjs()
   const [thisMonth] = useState(now.format('YYYY.MM.DD'))
@@ -93,41 +91,48 @@ export const Home = () => {
     getExpenses()
   }, [])
 
+  //오늘 지출, 수입
   const getTodayExpense = () => {
     let negativeTodayAmount = 0
     let positiveTodayAmount = 0
     const todayAmount = monthAmount[today]
-    const amounts = todayAmount.reduce(
-      (result, item) => {
-        if (item.amount < 0) {
-          result.negativeTodayAmount += item.amount
-        } else {
-          result.positiveTodayAmount += item.amount
-        }
-        return result
-      },
-      { negativeTodayAmount, positiveTodayAmount }
-    )
-    negativeTodayAmount = amounts.negativeTodayAmount
-    positiveTodayAmount = amounts.positiveTodayAmount
+    if (todayAmount) {
+      const amounts = todayAmount.reduce(
+        (result, item) => {
+          if (item.amount < 0) {
+            result.negativeTodayAmount += item.amount
+          } else {
+            result.positiveTodayAmount += item.amount
+          }
+          return result
+        },
+        { negativeTodayAmount, positiveTodayAmount }
+      )
+      negativeTodayAmount = amounts.negativeTodayAmount
+      positiveTodayAmount = amounts.positiveTodayAmount
 
-    settodayExpense(negativeTodayAmount)
-    settodayIncome(positiveTodayAmount)
+      settodayExpense(negativeTodayAmount)
+      settodayIncome(positiveTodayAmount)
+    }
   }
 
+  //이번달 지출, 수입
   const getMonthExpense = () => {
     let positiveMonthAmount = 0
     let negativeMonthAmount = 0
-    Object.entries(monthAmount).forEach(([, expenses]) => {
-      expenses.forEach((expense: Expense) => {
-        const amount = expense.amount
-        if (amount >= 0) {
-          positiveMonthAmount += amount
-        } else {
-          negativeMonthAmount += amount
-        }
+    if (monthAmount) {
+      Object.keys(monthAmount).map(date => {
+        const expenses = monthAmount[date]
+        expenses.map(expense => {
+          const amount = expense.amount
+          if (amount >= 0) {
+            positiveMonthAmount += amount
+          } else {
+            negativeMonthAmount += amount
+          }
+        })
       })
-    })
+    }
 
     setthisMonthExpense(negativeMonthAmount)
     setthisMonthIncome(positiveMonthAmount)
