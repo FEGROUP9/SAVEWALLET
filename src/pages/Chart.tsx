@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Header, Footer } from 'src/components'
 import {
   Chart as ChartJS,
@@ -14,7 +15,6 @@ import { ChevronRightIcon } from '@heroicons/react/outline'
 import { fetchExpenses } from 'api/FetchCategoryExpenses'
 import { useRecoilState } from 'recoil'
 import { selectedDateState } from 'recoil/SelectedDateState'
-// import { selectedCategoryState } from 'recoil/SelectedCategoryState'
 import { useChartHandlers } from 'src/hooks/ChartHooks'
 import { PeriodRange } from 'components/chart/PeriodRange'
 import styled from 'styled-components'
@@ -29,7 +29,8 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  width: 770px;
+  margin: 0 auto;
+  width: 100%;
   background-color: blanchedalmond;
 
   /* @media ${props => props.theme.mobile} {
@@ -109,10 +110,11 @@ const NavIcon = styled(ChevronRightIcon)`
 
 // Chart Page Component
 export const Chart = () => {
+  const navigate = useNavigate()
   const [chartData, setChartData] = useState<ChartData<'pie'> | null>(null)
 
   // 월별 Filtering - RecoilState
-  const [selectedDate, setSelectedDate] = useRecoilState(selectedDateState)
+  const [selectedDate] = useRecoilState(selectedDateState)
 
   // 수입, 지출 Filtering
   const [chartFilter, setChartFilter] = useState<'income' | 'expenses'>(
@@ -128,11 +130,6 @@ export const Chart = () => {
   const totalAmount = Object.values(categoryList)
     .filter(amount => amount > 0)
     .reduce((sum, amount) => sum + amount, 0)
-
-  // 차트 하단에 출력된 리스트에서 선택한 카테고리 담기
-  // const [selectedCategory, setSelectedCategory] = useRecoilState(
-  //   selectedCategoryState
-  // )
 
   // ChartHandlers - 월별 Filtering, 총합 가격 순으로 정렬, SubChart 렌더링
   const {
@@ -159,10 +156,12 @@ export const Chart = () => {
         console.log(filteredData)
 
         if (filteredData === null || filteredData.length === 0) {
-          alert(
-            `${selectedDate.year}년 ${selectedDate.month}월의 데이터가 없습니다.
-            \n수입 및 지출 내역을 입력해주세요!`
-          )
+          const confirmMessage = `${selectedDate.year}년 ${selectedDate.month}월의 데이터가 없습니다.\n수입 및 지출 내역을 입력해주세요!
+          \n확인 버튼 클릭 시 입력 페이지로 이동합니다!`
+
+          if (window.confirm(confirmMessage)) {
+            navigate('/logaccount')
+          }
           return
         }
 

@@ -24,6 +24,7 @@ export const SlideMenu = ({ isMenuOpen, handleCloseMenu }) => {
     localStorage.removeItem('id')
     localStorage.removeItem('token')
     handleCloseMenu()
+    window.location.reload()
   }
   return (
     <MenuSlideBackground className={isMenuOpen ? 'open' : ''}>

@@ -4,20 +4,29 @@ import styled from 'styled-components'
 import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  getMonthlyExpenses,
-  MonthlyExpenses,
-  Expense
-} from 'src/api/MonthlyExpenses2'
-import { useRecoilValue } from 'recoil'
-import { dateState } from 'src/recoil/DateState'
+import { getMonthlyExpenses, MonthlyExpenses } from 'src/api/MonthlyExpenses'
 import { SlideMenu } from '@/components/home/SlideMenu'
-
-//아이디받아오기 임시
 import axios from 'axios'
 
 export const Home = () => {
-  //아이디 받아오기 임시
+  const navigate = useNavigate()
+  const token = localStorage.getItem('token')
+  let id = localStorage.getItem('id')
+
+  const [monthAmount, setMonthAmount] = useState<MonthlyExpenses[]>([])
+
+  const now = dayjs()
+  const [thisMonth] = useState(now.format('YYYY.MM.DD'))
+  const [today] = useState(thisMonth.slice(-2))
+  const [currentTab, clickTab] = useState(0)
+  const [isMenuOpen, setisMenuOpen] = useState(false)
+
+  const [todayExpense, settodayExpense] = useState(0)
+  const [todayIncome, settodayIncome] = useState(0)
+  const [thisMonthExpense, setthisMonthExpense] = useState(0)
+  const [thisMonthIncome, setthisMonthIncome] = useState(0)
+
+  //사용자 아이디 받아오기
   const headers = {
     'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -30,40 +39,41 @@ export const Home = () => {
     try {
       const { data } = await request.get('/v2/user/me')
       localStorage.setItem('id', data.id)
+      id = localStorage.getItem('id')
+      getExpenses(id)
       return data
     } catch (error) {
       console.warn(error)
       console.warn('fail')
+      alert('로그인이 필요합니다')
+      navigate('/signin')
       return false
     }
   }
+
+  const getExpenses = async id => {
+    try {
+      const year: number = Number(thisMonth.slice(0, 4))
+      const month: number = Number(thisMonth.slice(5, 7))
+      const res = await getMonthlyExpenses(year, month, `team9-${id}`)
+      setMonthAmount(res)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+
   useEffect(() => {
-    if (token) {
+    if (token && !id) {
       getUserid()
     }
   }, [])
 
-  const navigate = useNavigate()
-  const token = localStorage.getItem('token')
-  const id = localStorage.getItem('id')
-  const USERID = `team9-${id}`
-  //로그인 병합전 테스트용
-  //병합 후 받아오는 아이디로 변경
-  //const USERID = `team9-2914827908`
-
-  const monthFilter = useRecoilValue<number>(dateState)
-  const [monthAmount, setMonthAmount] = useState<MonthlyExpenses>({})
-
-  const now = dayjs()
-  const [thisMonth] = useState(now.format('YYYY.MM.DD'))
-  const [today] = useState(thisMonth.slice(-2))
-  const [currentTab, clickTab] = useState(0)
-  const [isMenuOpen, setisMenuOpen] = useState(false)
-
-  const [todayExpense, settodayExpense] = useState(0)
-  const [todayIncome, settodayIncome] = useState(0)
-  const [thisMonthExpense, setthisMonthExpense] = useState(0)
-  const [thisMonthIncome, setthisMonthIncome] = useState(0)
+  //월 데이터 받아오기
+  useEffect(() => {
+    if (id) {
+      getExpenses(id)
+    }
+  }, [])
 
   const tabList = [
     {
@@ -78,61 +88,53 @@ export const Home = () => {
     }
   ]
 
-  //월 데이터 받아오기
-  useEffect(() => {
-    const getExpenses = async () => {
-      try {
-        const year: number = Number(thisMonth.slice(0, 4))
-        const res = await getMonthlyExpenses(year, monthFilter, USERID)
-        setMonthAmount(res)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-    getExpenses()
-  }, [])
-
+  //오늘 지출, 수입
   const getTodayExpense = () => {
     let negativeTodayAmount = 0
     let positiveTodayAmount = 0
     const todayAmount = monthAmount[today]
-    const amounts = todayAmount.reduce(
-      (result, item) => {
-        if (item.amount < 0) {
-          result.negativeTodayAmount += item.amount
-        } else {
-          result.positiveTodayAmount += item.amount
-        }
-        return result
-      },
-      { negativeTodayAmount, positiveTodayAmount }
-    )
-    negativeTodayAmount = amounts.negativeTodayAmount
-    positiveTodayAmount = amounts.positiveTodayAmount
+    if (todayAmount) {
+      const amounts = todayAmount.reduce(
+        (result, item) => {
+          if (item.amount < 0) {
+            result.negativeTodayAmount += item.amount
+          } else {
+            result.positiveTodayAmount += item.amount
+          }
+          return result
+        },
+        { negativeTodayAmount, positiveTodayAmount }
+      )
+      negativeTodayAmount = amounts.negativeTodayAmount
+      positiveTodayAmount = amounts.positiveTodayAmount
 
-    settodayExpense(negativeTodayAmount)
-    settodayIncome(positiveTodayAmount)
+      settodayExpense(negativeTodayAmount)
+      settodayIncome(positiveTodayAmount)
+    }
   }
 
+  //이번달 지출, 수입
   const getMonthExpense = () => {
     let positiveMonthAmount = 0
     let negativeMonthAmount = 0
-    Object.entries(monthAmount).forEach(([, expenses]) => {
-      expenses.forEach((expense: Expense) => {
-        const amount = expense.amount
-        if (amount >= 0) {
-          positiveMonthAmount += amount
-        } else {
-          negativeMonthAmount += amount
-        }
+    if (monthAmount) {
+      Object.keys(monthAmount).map(date => {
+        const expenses = monthAmount[date]
+        expenses.map(expense => {
+          const amount = expense.amount
+          if (amount >= 0) {
+            positiveMonthAmount += amount
+          } else {
+            negativeMonthAmount += amount
+          }
+        })
       })
-    })
+    }
 
     setthisMonthExpense(negativeMonthAmount)
     setthisMonthIncome(positiveMonthAmount)
   }
 
-  //업데이트 새로고침 해야됨
   useEffect(() => {
     if (Object.keys(monthAmount).length > 0) {
       getTodayExpense()
@@ -158,7 +160,7 @@ export const Home = () => {
       if (target == '지출 내역') {
         navigate('/list')
       } else if (target == '달력') {
-        navigate('/calender')
+        navigate('/calendar')
       } else if (target == '지출 분석') {
         navigate('/chart')
       } else if (target == '+ 내역 추가') {
@@ -166,6 +168,7 @@ export const Home = () => {
       }
     } else {
       alert('로그인이 필요합니다.')
+      navigate('/signin')
     }
   }
 
@@ -436,9 +439,6 @@ const NavButton = styled.div`
 `
 
 const AddButton = styled.button`
-  position: absolute;
-  bottom: 0;
-  margin-bottom: 2rem;
   flex-shrink: 0;
   width: 80%;
   height: 64px;
@@ -453,13 +453,4 @@ const AddButton = styled.button`
   color: #fff;
   border-radius: 6px;
   box-sizing: border-box;
-  @media ${props => props.theme.tablet} {
-    position: relative;
-  }
-  @media ${props => props.theme.laptop} {
-    position: relative;
-  }
-  @media ${props => props.theme.desktop} {
-    position: relative;
-  }
 `
