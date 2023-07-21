@@ -8,6 +8,7 @@ import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
 import { EditModal } from 'components/index'
 import { useNavigate } from 'react-router-dom'
+import { MonthlyExpenses, Expense } from 'api/index'
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -337,7 +338,7 @@ export const Calendar = () => {
         console.log(USERID)
         let expenses = await getMonthlyExpenses(year, month, USERID)
 
-        Object.values(expenses).map(i =>
+        Object.values(expenses).map((i: Expense[]) =>
           i.map(v => {
             setEvents(prevEvents => [
               ...prevEvents,
