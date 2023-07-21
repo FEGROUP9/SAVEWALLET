@@ -23,11 +23,11 @@ export default function ListItems() {
   useEffect(() => {
     const getExpenses = async () => {
       const year: number = new Date().getFullYear()
-      const userId: string = 'team9-2914827908'
-
+      const id = localStorage.getItem('id')
+      const USERID = `team9-${id}`
       setIsLoading(true)
 
-      const res = await getMonthlyExpenses(year, monthFilter, userId)
+      const res = await getMonthlyExpenses(year, monthFilter, USERID)
       setMonthExpenses(res)
 
       setTimeout(() => {
