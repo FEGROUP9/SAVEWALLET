@@ -9,13 +9,13 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import dayjs, { Dayjs } from 'dayjs'
 import { ArrowLeftIcon } from '@heroicons/react/outline'
 import { logExpense } from '@/api/LogAccount'
+import { getMonthlyExpenses } from 'src/api/MonthlyExpenses'
+import { useRecoilValue } from 'recoil'
+import { dateState } from 'src/recoil/DateState'
 
 export const LogAccount = () => {
   const id = localStorage.getItem('id')
   const USERID = `team9-${id}`
-
-  //로그인 병합전 임시
-  // const USERID = `team9-2914827908`
 
   const now = dayjs()
   const [today] = useState(now)
@@ -27,6 +27,8 @@ export const LogAccount = () => {
   const [time, setTime] = useState<Dayjs | null>(dayjs(today))
 
   const navigate = useNavigate()
+  const [thisMonth] = useState(now.format('YYYY.MM.DD'))
+  const monthFilter = useRecoilValue<number>(dateState)
 
   const inputNumberFormat = (event: KeyboardEvent<HTMLInputElement>) => {
     setExpense(comma(uncomma(event.currentTarget.value)))
@@ -64,6 +66,16 @@ export const LogAccount = () => {
     setselectCategory(event.target.value)
   }
 
+  const getExpenses = async () => {
+    try {
+      const year: number = Number(thisMonth.slice(0, 4))
+      const res = await getMonthlyExpenses(year, monthFilter, USERID)
+      console.log(res)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+
   const handleClickSaveButton = () => {
     let calculatedAmount = 0
     if (selectAmount) {
@@ -84,6 +96,7 @@ export const LogAccount = () => {
     ) {
       requestAddExpense(calculatedAmount, USERID, totalCategory, fullDate)
       navigate('/')
+      getExpenses()
     } else {
       alert('빠진 항목 없이 입력해주세요.')
     }

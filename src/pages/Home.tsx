@@ -2,53 +2,18 @@ import { MenuIcon, CalendarIcon, ViewListIcon } from '@heroicons/react/outline'
 import { ChartBarIcon } from '@heroicons/react/solid'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getMonthlyExpenses, MonthlyExpenses } from 'src/api/MonthlyExpenses'
 import { useRecoilValue } from 'recoil'
 import { dateState } from 'src/recoil/DateState'
 import { SlideMenu } from '@/components/home/SlideMenu'
-
-//아이디받아오기 임시
 import axios from 'axios'
 
 export const Home = () => {
-  //아이디 받아오기 임시
-  const headers = {
-    'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-    Authorization: `Bearer ${localStorage.getItem('token')}`
-  }
-  const request = axios.create({
-    baseURL: 'https://kapi.kakao.com/',
-    headers
-  })
-  const getUserid = async () => {
-    try {
-      const { data } = await request.get('/v2/user/me')
-      localStorage.setItem('id', data.id)
-      return data
-    } catch (error) {
-      console.warn(error)
-      console.warn('fail')
-      alert('로그인이 필요합니다')
-      navigate('/signin')
-      return false
-    }
-  }
-  useEffect(() => {
-    if (token) {
-      getUserid()
-    }
-  }, [])
-
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
-  const id = localStorage.getItem('id')
-  const USERID = `team9-${id}`
-  //로그인 병합전 테스트용
-  //병합 후 받아오는 아이디로 변경
-  // const id = 2914827908
-  // const USERID = `team9-2914827908`
+  let id = localStorage.getItem('id')
 
   const monthFilter = useRecoilValue<number>(dateState)
   const [monthAmount, setMonthAmount] = useState<MonthlyExpenses[]>([])
@@ -64,6 +29,54 @@ export const Home = () => {
   const [thisMonthExpense, setthisMonthExpense] = useState(0)
   const [thisMonthIncome, setthisMonthIncome] = useState(0)
 
+  //사용자 아이디 받아오기
+  const headers = {
+    'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+    Authorization: `Bearer ${localStorage.getItem('token')}`
+  }
+  const request = axios.create({
+    baseURL: 'https://kapi.kakao.com/',
+    headers
+  })
+  const getUserid = async () => {
+    try {
+      const { data } = await request.get('/v2/user/me')
+      localStorage.setItem('id', data.id)
+      id = localStorage.getItem('id')
+      getExpenses(id)
+      return data
+    } catch (error) {
+      console.warn(error)
+      console.warn('fail')
+      alert('로그인이 필요합니다')
+      navigate('/signin')
+      return false
+    }
+  }
+
+  const getExpenses = async id => {
+    try {
+      const year: number = Number(thisMonth.slice(0, 4))
+      const res = await getMonthlyExpenses(year, monthFilter, `team9-${id}`)
+      setMonthAmount(res)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+
+  useEffect(() => {
+    if (token && !id) {
+      getUserid()
+    }
+  }, [])
+
+  //월 데이터 받아오기
+  useEffect(() => {
+    if (id) {
+      getExpenses(id)
+    }
+  }, [])
+
   const tabList = [
     {
       name: '지출',
@@ -76,20 +89,6 @@ export const Home = () => {
       today: todayIncome.toLocaleString('ko-KR')
     }
   ]
-
-  //월 데이터 받아오기
-  useEffect(() => {
-    const getExpenses = async () => {
-      try {
-        const year: number = Number(thisMonth.slice(0, 4))
-        const res = await getMonthlyExpenses(year, monthFilter, USERID)
-        setMonthAmount(res)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-    getExpenses()
-  }, [])
 
   //오늘 지출, 수입
   const getTodayExpense = () => {
@@ -443,9 +442,6 @@ const NavButton = styled.div`
 `
 
 const AddButton = styled.button`
-  position: absolute;
-  bottom: 0;
-  margin-bottom: 2rem;
   flex-shrink: 0;
   width: 80%;
   height: 64px;
@@ -460,13 +456,4 @@ const AddButton = styled.button`
   color: #fff;
   border-radius: 6px;
   box-sizing: border-box;
-  @media ${props => props.theme.tablet} {
-    position: relative;
-  }
-  @media ${props => props.theme.laptop} {
-    position: relative;
-  }
-  @media ${props => props.theme.desktop} {
-    position: relative;
-  }
 `
