@@ -48,6 +48,7 @@ export const EditModal: React.FC<EditModalProps> = ({
   }
 
   const handleClickSaveButton = async () => {
+    //예외처리(수정날짜 유효성검사, 내역(CATEGORY) 미입력, 금액 미입력)
     if (editedExpense.date.trim() === '') {
       alert('다시 입력해주세요.')
       return

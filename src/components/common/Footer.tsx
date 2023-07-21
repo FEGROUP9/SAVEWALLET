@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { theme } from 'style/index'
 
 export const Footer = () => {
   const navigate = useNavigate()
@@ -10,18 +11,23 @@ export const Footer = () => {
       return 'active'
     }
   }
+  const map = new Map()
+  map.set('/chart', '차트')
+  map.set('/calendar', '달력')
+  map.set('/list', '내역')
+  map.set('/logaccount', '입력')
 
   return (
     <Wrapper>
       <Title
         onClick={() => navigate('/list')}
         className={pathFinder('/list')}>
-        내역
+        {map.get('/list')}
       </Title>
       <Title
         onClick={() => navigate('/calendar')}
         className={pathFinder('/calendar')}>
-        달력
+        {map.get('/calendar')}
       </Title>
       <Title
         onClick={() => navigate('/chart')}
@@ -30,12 +36,12 @@ export const Footer = () => {
             ? pathFinder('/chart')
             : pathFinder('/subchart')
         }>
-        차트
+        {map.get('/chart')}
       </Title>
       <Title
         onClick={() => navigate('/logaccount')}
         className={pathFinder('/logaccount')}>
-        입력
+        {map.get('/logaccount')}
       </Title>
     </Wrapper>
   )
@@ -70,5 +76,19 @@ const Title = styled.div`
     background-color: #f15441;
     color: #fff;
     font-weight: 700;
+  }
+  @media ${theme.laptop} {
+    font-size: 20px;
+    margin: 15px;
+  }
+  @media ${theme.tablet} {
+    font-size: 14px;
+    margin: 10px;
+    padding: 0 10px;
+  }
+  @media ${theme.mobile} {
+    font-size: 12px;
+    margin: 10px;
+    padding: 0 10px;
   }
 `
