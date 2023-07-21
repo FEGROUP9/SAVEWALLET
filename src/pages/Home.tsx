@@ -264,6 +264,7 @@ const MenuButton = styled.div`
 const HeadLine = styled.div`
   font-size: 24px;
   font-weight: 700;
+  font-family: 'TheJamsil5Bold';
   line-height: 1.4;
   margin-bottom: 50px;
   margin-top: 20px;
