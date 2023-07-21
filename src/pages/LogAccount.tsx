@@ -15,7 +15,7 @@ export const LogAccount = () => {
   const USERID = `team9-${id}`
 
   //로그인 병합전 임시
-  //const USERID = `team9-2914827908`
+  // const USERID = `team9-2914827908`
 
   const now = dayjs()
   const [today] = useState(now)

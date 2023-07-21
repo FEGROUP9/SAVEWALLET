@@ -7,6 +7,7 @@ import { Header, Footer } from 'components/index'
 import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
 import { EditModal } from 'components/index'
+import { useNavigate } from 'react-router-dom'
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -311,7 +312,10 @@ export const Calendar = () => {
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [selectedExpense, setSelectedExpense] = useState<Expense>({} as Expense)
 
+  const navigate = useNavigate()
   const calendarRef = useRef({})
+  const id = localStorage.getItem('id')
+  const USERID = `team9-${id}`
 
   const regex = /[^0-9]/g
 
@@ -328,28 +332,35 @@ export const Calendar = () => {
   //수정/삭제시 마지막 초기화 setEvetns('') RECOIL?
   useEffect(() => {
     /**날짜별 소비 달력 표시 함수*/
-    const renderDailyExpenses = async () => {
-      let expenses = await getMonthlyExpenses(year, month, 'team9-2914827908')
+    if (id) {
+      const renderDailyExpenses = async () => {
+        console.log(USERID)
+        let expenses = await getMonthlyExpenses(year, month, USERID)
 
-      Object.values(expenses).map(i =>
-        i.map(v => {
-          setEvents(prevEvents => [
-            ...prevEvents,
-            {
-              title: v.category,
-              date: v.date.replace('Z', '')
-            },
-            {
-              allDay: true,
-              title: v.amount.toLocaleString() + '원',
-              start: v.date.replace('Z', '')
-            }
-          ])
-        })
-      )
+        Object.values(expenses).map(i =>
+          i.map(v => {
+            setEvents(prevEvents => [
+              ...prevEvents,
+              {
+                title: v.category,
+                date: v.date.replace('Z', '')
+              },
+              {
+                allDay: true,
+                title: v.amount.toLocaleString() + '원',
+                start: v.date.replace('Z', '')
+              }
+            ])
+          })
+        )
+      }
+      renderDailyExpenses()
     }
-    renderDailyExpenses()
-  }, [year, month])
+    if (!id) {
+      alert('로그인이 필요합니다.')
+      navigate('/signin')
+    }
+  }, [year, month, id])
   return (
     <>
       <Header />
@@ -378,43 +389,47 @@ export const Calendar = () => {
             prevBtn: {
               icon: 'chevron-left',
               click: () => {
-                calendarRef.current.getApi().prev()
-                const calendarMonth = _.get(
-                  calendarRef.current.getApi(), //DOM의 정보 가져옴
-                  'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
-                )
-                setYear(
-                  parseInt(
-                    calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
+                if (calendarRef) {
+                  calendarRef.current.getApi().prev()
+                  const calendarMonth = _.get(
+                    calendarRef.current.getApi(), //DOM의 정보 가져옴
+                    'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
                   )
-                )
-                setMonth(
-                  parseInt(
-                    calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
+                  setYear(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
+                    )
                   )
-                )
-                setEvents([])
+                  setMonth(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
+                    )
+                  )
+                  setEvents([])
+                }
               }
             },
             nextBtn: {
               icon: 'chevron-right',
               click: () => {
-                calendarRef.current.getApi().next()
-                const calendarMonth = _.get(
-                  calendarRef.current.getApi(), //DOM의 정보 가져옴
-                  'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
-                )
-                setYear(
-                  parseInt(
-                    calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
+                if (calendarRef) {
+                  calendarRef.current.getApi().next()
+                  const calendarMonth = _.get(
+                    calendarRef.current.getApi(), //DOM의 정보 가져옴
+                    'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
                   )
-                )
-                setMonth(
-                  parseInt(
-                    calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
+                  setYear(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
+                    )
                   )
-                )
-                setEvents([])
+                  setMonth(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
+                    )
+                  )
+                  setEvents([])
+                }
               }
             }
           }}
