@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { DeleteExpenseList } from 'src/api/DeleteList'
 import { TrashIcon } from '@heroicons/react/outline'
 import styled from 'styled-components'

@@ -10,8 +10,6 @@ import dayjs, { Dayjs } from 'dayjs'
 import { ArrowLeftIcon } from '@heroicons/react/outline'
 import { logExpense } from '@/api/LogAccount'
 import { getMonthlyExpenses } from 'src/api/MonthlyExpenses'
-import { useRecoilValue } from 'recoil'
-import { dateState } from 'src/recoil/DateState'
 
 export const LogAccount = () => {
   const id = localStorage.getItem('id')
@@ -28,7 +26,6 @@ export const LogAccount = () => {
 
   const navigate = useNavigate()
   const [thisMonth] = useState(now.format('YYYY.MM.DD'))
-  const monthFilter = useRecoilValue<number>(dateState)
 
   const inputNumberFormat = (event: KeyboardEvent<HTMLInputElement>) => {
     setExpense(comma(uncomma(event.currentTarget.value)))
@@ -69,8 +66,8 @@ export const LogAccount = () => {
   const getExpenses = async () => {
     try {
       const year: number = Number(thisMonth.slice(0, 4))
-      const res = await getMonthlyExpenses(year, monthFilter, USERID)
-      console.log(res)
+      const month: number = Number(thisMonth.slice(5, 7))
+      await getMonthlyExpenses(year, month, USERID)
     } catch (error) {
       console.error('Error fetching data:', error)
     }

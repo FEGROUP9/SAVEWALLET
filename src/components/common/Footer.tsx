@@ -10,6 +10,7 @@ export const Footer = () => {
     if (isCurrent) {
       return 'active'
     }
+    return
   }
   const map = new Map()
   map.set('/chart', '차트')

@@ -15,7 +15,6 @@ import { ChevronRightIcon } from '@heroicons/react/outline'
 import { fetchExpenses } from 'api/FetchCategoryExpenses'
 import { useRecoilState } from 'recoil'
 import { selectedDateState } from 'recoil/SelectedDateState'
-import { selectedCategoryState } from 'recoil/SelectedCategoryState'
 import { useChartHandlers } from 'src/hooks/ChartHooks'
 import { PeriodRange } from 'components/chart/PeriodRange'
 import styled from 'styled-components'
@@ -115,7 +114,7 @@ export const Chart = () => {
   const [chartData, setChartData] = useState<ChartData<'pie'> | null>(null)
 
   // 월별 Filtering - RecoilState
-  const [selectedDate, setSelectedDate] = useRecoilState(selectedDateState)
+  const [selectedDate] = useRecoilState(selectedDateState)
 
   // 수입, 지출 Filtering
   const [chartFilter, setChartFilter] = useState<'income' | 'expenses'>(
@@ -131,11 +130,6 @@ export const Chart = () => {
   const totalAmount = Object.values(categoryList)
     .filter(amount => amount > 0)
     .reduce((sum, amount) => sum + amount, 0)
-
-  // 차트 하단에 출력된 리스트에서 선택한 카테고리 담기
-  const [selectedCategory, setSelectedCategory] = useRecoilState(
-    selectedCategoryState
-  )
 
   // ChartHandlers - 월별 Filtering, 총합 가격 순으로 정렬, SubChart 렌더링
   const {

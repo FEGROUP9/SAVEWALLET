@@ -8,6 +8,7 @@ import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
 import { EditModal } from 'components/index'
 import { useNavigate } from 'react-router-dom'
+import { MonthlyExpenses, Expense } from 'api/index'
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -310,10 +311,10 @@ export const Calendar = () => {
 
   const [monthExpenses, setMonthExpenses] = useState<MonthlyExpenses[]>([])
   const [editModalOpen, setEditModalOpen] = useState(false)
-  const [selectedExpense, setSelectedExpense] = useState<Expense>({} as Expense)
+  const [selectedExpense] = useState<Expense>({} as Expense)
 
   const navigate = useNavigate()
-  const calendarRef = useRef({})
+  const calendarRef = useRef(null)
   const id = localStorage.getItem('id')
   const USERID = `team9-${id}`
 
@@ -329,30 +330,28 @@ export const Calendar = () => {
     })
     setMonthExpenses(updatedMonthExpenses)
   }
-  //수정/삭제시 마지막 초기화 setEvetns('') RECOIL?
   useEffect(() => {
     /**날짜별 소비 달력 표시 함수*/
     if (id) {
       const renderDailyExpenses = async () => {
-        console.log(USERID)
         let expenses = await getMonthlyExpenses(year, month, USERID)
 
-        Object.values(expenses).map(i =>
-          i.map(v => {
-            setEvents(prevEvents => [
-              ...prevEvents,
-              {
-                title: v.category,
-                date: v.date.replace('Z', '')
-              },
-              {
-                allDay: true,
-                title: v.amount.toLocaleString() + '원',
-                start: v.date.replace('Z', '')
-              }
-            ])
-          })
-        )
+        // Object.values(expenses).map((i: Expense[]) =>
+        //   i.map(v => {
+        //     setEvents(prevEvents => [
+        //       ...prevEvents,
+        //       {
+        //         title: v.category,
+        //         date: v.date.replace('Z', '')
+        //       },
+        //       {
+        //         allDay: true,
+        //         title: v.amount.toLocaleString() + '원',
+        //         start: v.date.replace('Z', '')
+        //       }
+        //     ])
+        //   })
+        // )
       }
       renderDailyExpenses()
     }
@@ -390,21 +389,21 @@ export const Calendar = () => {
               icon: 'chevron-left',
               click: () => {
                 if (calendarRef) {
-                  calendarRef.current.getApi().prev()
-                  const calendarMonth = _.get(
-                    calendarRef.current.getApi(), //DOM의 정보 가져옴
-                    'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
-                  )
-                  setYear(
-                    parseInt(
-                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
-                    )
-                  )
-                  setMonth(
-                    parseInt(
-                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
-                    )
-                  )
+                  // calendarRef.current.getApi().prev()
+                  // const calendarMonth = _.get(
+                  //   calendarRef.current.getApi(), //DOM의 정보 가져옴
+                  //   'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
+                  // )
+                  // setYear(
+                  //   parseInt(
+                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
+                  //   )
+                  // )
+                  // setMonth(
+                  //   parseInt(
+                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
+                  //   )
+                  // )
                   setEvents([])
                 }
               }
@@ -413,21 +412,21 @@ export const Calendar = () => {
               icon: 'chevron-right',
               click: () => {
                 if (calendarRef) {
-                  calendarRef.current.getApi().next()
-                  const calendarMonth = _.get(
-                    calendarRef.current.getApi(), //DOM의 정보 가져옴
-                    'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
-                  )
-                  setYear(
-                    parseInt(
-                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
-                    )
-                  )
-                  setMonth(
-                    parseInt(
-                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
-                    )
-                  )
+                  // calendarRef.current.getApi().next()
+                  // const calendarMonth = _.get(
+                  //   calendarRef.current.getApi(), //DOM의 정보 가져옴
+                  //   'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
+                  // )
+                  // setYear(
+                  //   parseInt(
+                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
+                  //   )
+                  // )
+                  // setMonth(
+                  //   parseInt(
+                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
+                  //   )
+                  // )
                   setEvents([])
                 }
               }
@@ -436,7 +435,6 @@ export const Calendar = () => {
           eventClick={() => {
             setEditModalOpen(true)
             // handleEditExpense()
-            console.log(calendarRef.current)
           }}
           // 모달 [컨텐츠 - 수정,삭제,취소 버튼]
         />
