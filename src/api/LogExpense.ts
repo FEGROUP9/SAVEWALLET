@@ -1,4 +1,4 @@
-import { saveWallet } from 'api/index'
+import { baseInstance } from 'api/index'
 
 export const logExpense = async (
   amount: number,
@@ -7,7 +7,7 @@ export const logExpense = async (
   date: string
 ) => {
   try {
-    const res = await saveWallet({
+    const res = await baseInstance({
       method: 'POST',
       data: {
         amount: amount,

@@ -32,7 +32,6 @@ const MonthLabel = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 50px;
 `
 
 const MonthButton = styled.button`
@@ -41,7 +40,7 @@ const MonthButton = styled.button`
   align-items: center;
   justify-content: center;
   border: none;
-  background-color: white;
+  background-color: #f4f4f5;
   svg {
     width: 20px;
     &:hover {
@@ -52,5 +51,5 @@ const MonthButton = styled.button`
 
 const CurMonth = styled.div`
   font-weight: bold;
-  font-size: 20px;
+  font-size: 30px;
 `

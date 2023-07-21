@@ -14,7 +14,7 @@ export const Footer = () => {
       </Title>
       <Title
         onClick={() => navigate('/calendar')}
-        className={location.pathname === '/calender' ? 'active' : ''}>
+        className={location.pathname === '/calendar' ? 'active' : ''}>
         달력
       </Title>
       <Title
