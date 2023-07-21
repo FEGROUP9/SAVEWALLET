@@ -239,7 +239,7 @@ const ExpenseList = styled.div`
   margin-bottom: 0px;
   overflow: auto;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 5px;
 
   @media ${theme.laptop} {
     width: 50vw;
@@ -247,7 +247,7 @@ const ExpenseList = styled.div`
   }
 
   @media ${theme.desktop} {
-    width: 40vw;
+    width: 60vw;
     height: 75vh;
   }
   @media ${theme.tablet} {
@@ -291,10 +291,8 @@ const CategoryRow = styled.div`
 `
 
 const Title = styled.span`
-  /* font-weight: bold; */
   font-size: 13px;
   width: 120px;
-  /* font-weight: 500; */
 
   @media ${theme.desktop} {
     width: 100px;
@@ -329,8 +327,7 @@ const Category = styled.div`
 `
 
 const History = styled.div`
-  font-weight: bold;
-  color: grey;
+  font-weight: 300;
   font-size: 13px;
 
   @media ${theme.mobile} {
