@@ -443,7 +443,7 @@ const AddButton = styled.button`
   flex-shrink: 0;
   width: 80%;
   height: 64px;
-  background-color: #f15441;
+  background-color: ${props => props.theme.colors.primary};
   border: none;
   max-width: 768px;
   font-size: 18px;
