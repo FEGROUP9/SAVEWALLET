@@ -437,7 +437,6 @@ export const Calendar = () => {
           eventClick={() => {
             setEditModalOpen(true)
             // handleEditExpense()
-            console.log(calendarRef.current)
           }}
           // 모달 [컨텐츠 - 수정,삭제,취소 버튼]
         />
