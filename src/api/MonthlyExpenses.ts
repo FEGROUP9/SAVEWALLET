@@ -1,4 +1,4 @@
-import saveWallet from './axios'
+import { baseInstance } from 'api/index'
 
 export const getMonthlyExpenses = async (
   year: number,
@@ -6,10 +6,9 @@ export const getMonthlyExpenses = async (
   userId: string
 ): Promise<MonthlyExpenses[]> => {
   try {
-    const response = await saveWallet({
-      method: 'GET',
-      url: `/expenses/calendar?year=${year}&month=${month}&userId=${userId}`
-    })
+    const response = await baseInstance.get(
+      `/expenses/calendar?year=${year}&month=${month}&userId=${userId}`
+    )
     return response.data
   } catch (error) {
     console.warn(error)
@@ -23,9 +22,10 @@ export interface MonthlyExpenses {
 }
 
 export interface Expense {
+  _id: string
   amount: number
   userId: string
   category: string
   date: string
-  _id: string
+  __v: number
 }
