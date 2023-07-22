@@ -1,41 +1,34 @@
-# 초기설정 공지
+# 가계구조대
 
-### index.html
+가계부 프로젝트 다슬님 일단 틀만 잡아뒀습니다.
 
-RESET CSS 적용되어 있습니다.
+## 배포사이트
 
-### tsconfig.json
+### Stack
 
-수정하실/추가하실 부분 생기시면 tsconfig에서 경로별칭 수정/추가하시면 됩니다!
+<div style="display: flex">
+<img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/>
+<img src="https://img.shields.io/badge/Typescript-3178C6?style=flat&logo=typescript&logoColor=white"/>
 
-    "paths": {
+</div>
+<div style="display: flex">
+<img src="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=Vite&logoColor=white"/>
+</div>
 
-    	"@/*": ["src/*"],
-    	"pages/*": ["src/pages/*"],
-    	"components/*": ["src/components/*"],
+## Library
 
-    	"calender/*": ["src/components/calender/*"],
-    	"chart/*": ["src/components/chart/*"],
-    	"home/*": ["src/components/home/*"],
-    	"list/*": ["src/components/list/*"],
+<div style="display: flex">
+<img src="https://img.shields.io/badge/Recoil-0075EB?style=flat&logo=&logoColor=white"/>
+<img src="https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=axios&logoColor=white"/>
+</div>
 
-    	"recoil/*": ["src/recoil/*"],
-    	"types/*": ["src/types/*"],
-    	"utils/*": ["src/utils/*"],
-    	"api/*": ["src/api/*"]
-    }
+## Environment
 
-## index.ts
+## Library
 
-### 1. named export
+# 개발팀원 및 역할
 
-- react snippet 사용시 rafc 사용 후 최상단 import react from 'React' 제거해주신 후 컴포넌트 작업하시면 됩니다!
-
-### 2. index.ts 파일 내에 export 경로 작성
-
-- export \* from 'components(경로별칭 적용)/App(index.ts와 동일 폴더에 위치한 파일명, tsx생략)'
-- export \* from 'components(경로별칭 적용)/common(하위 폴더 입력시, 하위 폴더의 index.ts를 다시 탐색합니다.)'
-- 따라서 components/index만으로 하위 폴더의 index는 추가적으로 명시할 필요가 없게 됩니다.
-- e.g) `import { App, NotFound, ErrorComponent } from  'components/index'`
-- App은 components내에, NotFound, ErrorComponents는 components/common내에 위치해있습니다.
-- componets내의 index.ts에 `export  *  from  'components/common'` 를 입력해줌으로 예시의 구조로 import가 가능해집니다.
+| <a href="https://github.com/hookor"><img src="https://avatars.githubusercontent.com/u/115582699?v=4" width=200px alt="안중후" /></a> | <a href="https://github.com/7581058"><img src="https://avatars.githubusercontent.com/u/100559990?v=4" width=200px alt="김다슬" /></a> | <a href="https://github.com/DevYBecca"><img src="https://avatars.githubusercontent.com/u/125433485?v=4" width=200px alt="윤금엽" /></a> | <a href="https://github.com/leechanghwi"><img src="https://avatars.githubusercontent.com/u/?" width=200px alt="이창휘" /></a> |
+| :----------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: |
+|                                                 [안중후](https://github.com/hookor)                                                  |                                                 [김다슬](https://github.com/7581058)                                                  |                                                 [윤금엽](https://github.com/DevYBecca)                                                  |                                           [이창휘](https://github.com/leechanghwi)                                            |
+|                                                          캘린더 페이지 구현                                                          |                                                       메인, 로그인 페이지 구현                                                        |                                                            차트 페이지 구현                                                             |                                                      리스트 페이지 구현                                                       |
