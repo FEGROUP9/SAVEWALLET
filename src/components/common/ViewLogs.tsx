@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { theme } from 'style/index'
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -13,11 +14,29 @@ const ModalContainer = styled.div`
   z-index: 999;
 `
 const ModalContent = styled.div`
+  display: flex;
   background-color: #fff;
-  padding: 30px;
-  width: 300px;
+  /* padding: 30px; */
   line-height: 45px;
   border-radius: 6px;
+  flex-direction: column;
+  align-items: center;
+  @media ${theme.desktop} {
+    width: 800px;
+    padding: 50px;
+  }
+  @media ${theme.laptop} {
+    width: 600px;
+    padding: 50px;
+  }
+  @media ${theme.tablet} {
+    width: 400px;
+    padding: 50px;
+  }
+  @media ${theme.mobile} {
+    width: 200px;
+    padding: 30px;
+  }
 `
 
 const Button = styled.button`
@@ -28,15 +47,23 @@ const Button = styled.button`
   border-radius: 5px;
 `
 
-const CancelButton = styled(Button)`
+const ConfirmButton = styled(Button)`
   padding: 3px 15px;
-  margin-right: 10px;
+  margin-top: 10px;
 `
-export const ViewLogs = ({ closeModal }) => {
+export const ViewLogs = ({ closeModal, expense }) => {
+  const map = new Map()
+  map.set('price', '금액 : ')
+  map.set('content', '내역 : ')
+  map.set('confirm', '확인')
+
   return (
     <ModalContainer>
       <ModalContent>
-        <CancelButton onClick={closeModal}>취소</CancelButton>
+        {expense.allDay
+          ? `${map.get('price')}${expense.title}`
+          : `${map.get('content')}${expense.title}`}
+        <ConfirmButton onClick={closeModal}>{map.get('confirm')}</ConfirmButton>
       </ModalContent>
     </ModalContainer>
   )

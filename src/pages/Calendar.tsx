@@ -310,6 +310,7 @@ export const Calendar = () => {
   const [month, setMonth] = useState(initialMonth)
 
   const [modalOpen, setModalOpen] = useState(false)
+  const [selectedExpense, setSelectedExpense] = useState({})
 
   const navigate = useNavigate()
   const calendarRef = useRef<FullCalendar>(null)
@@ -428,12 +429,19 @@ export const Calendar = () => {
               }
             }
           }}
-          eventClick={() => {
+          eventClick={event => {
             setModalOpen(true)
+            console.log(event.event)
+            setSelectedExpense(event.event)
           }}
           // 모달 [컨텐츠 - 수정,삭제,취소 버튼]
         />
-        {modalOpen && <ViewLogs closeModal={closeModal} />}
+        {modalOpen && (
+          <ViewLogs
+            closeModal={closeModal}
+            expense={selectedExpense}
+          />
+        )}
       </Wrapper>
       <Footer />
     </>
