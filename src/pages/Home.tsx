@@ -264,6 +264,7 @@ const MenuButton = styled.div`
 const HeadLine = styled.div`
   font-size: 24px;
   font-weight: 700;
+  font-family: 'TheJamsil5Bold';
   line-height: 1.4;
   margin-bottom: 50px;
   margin-top: 20px;
@@ -442,7 +443,7 @@ const AddButton = styled.button`
   flex-shrink: 0;
   width: 80%;
   height: 64px;
-  background-color: #f15441;
+  background-color: ${props => props.theme.colors.primary};
   border: none;
   max-width: 768px;
   font-size: 18px;

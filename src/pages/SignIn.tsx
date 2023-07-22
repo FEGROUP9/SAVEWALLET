@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 import kakaobutton from '../assets/kakao_login_medium_wide.png'
+import logo from '../assets/logo_gradi.png'
+import { NavLink } from 'react-router-dom'
 
 export const SignIn = () => {
   //배포할때 숨기기 //일단 테스트용으로 작성해놨습니다
@@ -15,11 +17,10 @@ export const SignIn = () => {
   }
   return (
     <Wrapper>
-      {/* 임시로 작성해놓음 디자인 잡히면 수정 */}
-      <Logo>
-        SAVEWALLET<p>가계구조대</p>
-      </Logo>
+      <Logo />
+      <Title>SAVEWALLET</Title>
       <KakaoButton onClick={handleSignIn}></KakaoButton>
+      <HomeButton to="/">돌아가기</HomeButton>
     </Wrapper>
   )
 }
@@ -34,19 +35,22 @@ const Wrapper = styled.div`
   justify-content: center;
   box-sizing: border-box;
   padding: 2rem;
-  background-color: #f4f4f5;
+  background-color: #ededed;
 `
 
 const Logo = styled.div`
-  font-size: 32px;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  background-image: url(${logo});
+  background-size: contain;
+`
+
+const Title = styled.span`
+  font-size: 24px;
+  color: #2d2c2c;
   font-weight: bold;
-  color: #f15441;
-  p {
-    font-size: 18px;
-    color: #000;
-    text-align: center;
-  }
-  margin-bottom: 100px;
+  margin-bottom: 50px;
 `
 
 const KakaoButton = styled.div`
@@ -61,4 +65,22 @@ const KakaoButton = styled.div`
   align-items: center;
   color: #191919;
   background-image: url(${kakaobutton});
+  margin-bottom: 10px;
+`
+
+const HomeButton = styled(NavLink)`
+  box-sizing: border-box;
+  width: 280px;
+  height: 45px;
+  background-color: transparent;
+  border: 1px solid #6471e9;
+  outline: none;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #362f2f;
+  font-size: 14px;
+  font-weight: 600;
 `
