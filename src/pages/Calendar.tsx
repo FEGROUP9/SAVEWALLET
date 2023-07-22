@@ -8,7 +8,7 @@ import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
 import { EditModal } from 'components/index'
 import { useNavigate } from 'react-router-dom'
-import { MonthlyExpenses, Expense } from 'api/index'
+import { Expense, CalendarEvent } from 'api/index'
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -304,17 +304,17 @@ const initialYear = date.getFullYear()
 const initialMonth = date.getMonth() + 1
 
 export const Calendar = () => {
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useState<CalendarEvent[]>([])
   //캘린더 이전/다음달 변경시 년/월 정보
   const [year, setYear] = useState(initialYear)
   const [month, setMonth] = useState(initialMonth)
 
-  const [monthExpenses, setMonthExpenses] = useState<MonthlyExpenses[]>([])
+  const [monthExpenses, setMonthExpenses] = useState([])
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [selectedExpense] = useState<Expense>({} as Expense)
 
   const navigate = useNavigate()
-  const calendarRef = useRef(null)
+  const calendarRef = useRef<FullCalendar>(null)
   const id = localStorage.getItem('id')
   const USERID = `team9-${id}`
 
@@ -330,35 +330,43 @@ export const Calendar = () => {
     })
     setMonthExpenses(updatedMonthExpenses)
   }
+
   useEffect(() => {
     /**날짜별 소비 달력 표시 함수*/
-    if (id) {
-      const renderDailyExpenses = async () => {
-        let expenses = await getMonthlyExpenses(year, month, USERID)
-
-        // Object.values(expenses).map((i: Expense[]) =>
-        //   i.map(v => {
-        //     setEvents(prevEvents => [
-        //       ...prevEvents,
-        //       {
-        //         title: v.category,
-        //         date: v.date.replace('Z', '')
-        //       },
-        //       {
-        //         allDay: true,
-        //         title: v.amount.toLocaleString() + '원',
-        //         start: v.date.replace('Z', '')
-        //       }
-        //     ])
-        //   })
-        // )
+    const renderDailyExpenses = async () => {
+      if (!id) {
+        alert('로그인이 필요합니다.')
+        navigate('/signin')
+        return
       }
-      renderDailyExpenses()
+
+      if (id) {
+        const expenses = await getMonthlyExpenses(year, month, USERID)
+
+        const newEvents: CalendarEvent[] = []
+
+        Object.keys(expenses).forEach((date: string) => {
+          const monthlyExpenses: Expense[] = expenses[date]
+          console.log(monthlyExpenses)
+          monthlyExpenses.forEach((expense: Expense) => {
+            newEvents.push({
+              title: expense.category,
+              date: expense.date.replace('Z', '')
+            })
+
+            newEvents.push({
+              title: `${expense.amount.toLocaleString()}원`,
+              allDay: true,
+              start: expense.date.replace('Z', '')
+            })
+          })
+        })
+
+        setEvents(newEvents)
+      }
     }
-    if (!id) {
-      alert('로그인이 필요합니다.')
-      navigate('/signin')
-    }
+
+    renderDailyExpenses()
   }, [year, month, id])
   return (
     <>
@@ -388,22 +396,22 @@ export const Calendar = () => {
             prevBtn: {
               icon: 'chevron-left',
               click: () => {
-                if (calendarRef) {
-                  // calendarRef.current.getApi().prev()
-                  // const calendarMonth = _.get(
-                  //   calendarRef.current.getApi(), //DOM의 정보 가져옴
-                  //   'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
-                  // )
-                  // setYear(
-                  //   parseInt(
-                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
-                  //   )
-                  // )
-                  // setMonth(
-                  //   parseInt(
-                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
-                  //   )
-                  // )
+                if (calendarRef.current?.getApi()) {
+                  calendarRef.current.getApi().prev()
+                  const calendarMonth = _.get(
+                    calendarRef.current.getApi(), //DOM의 정보 가져옴
+                    'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
+                  )
+                  setYear(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
+                    )
+                  )
+                  setMonth(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
+                    )
+                  )
                   setEvents([])
                 }
               }
@@ -411,22 +419,22 @@ export const Calendar = () => {
             nextBtn: {
               icon: 'chevron-right',
               click: () => {
-                if (calendarRef) {
-                  // calendarRef.current.getApi().next()
-                  // const calendarMonth = _.get(
-                  //   calendarRef.current.getApi(), //DOM의 정보 가져옴
-                  //   'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
-                  // )
-                  // setYear(
-                  //   parseInt(
-                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
-                  //   )
-                  // )
-                  // setMonth(
-                  //   parseInt(
-                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
-                  //   )
-                  // )
+                if (calendarRef.current?.getApi()) {
+                  calendarRef.current.getApi().next()
+                  const calendarMonth = _.get(
+                    calendarRef.current.getApi(), //DOM의 정보 가져옴
+                    'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
+                  )
+                  setYear(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
+                    )
+                  )
+                  setMonth(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
+                    )
+                  )
                   setEvents([])
                 }
               }
