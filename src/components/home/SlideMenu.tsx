@@ -69,70 +69,72 @@ const MenuSlideBackground = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   visibility: hidden;
   transition: 0.1s ease;
+  font-family: 'TheJamsil3Regular';
   &.open {
     visibility: visible;
   }
 `
-
 const MenuSlide = styled.div`
-  width: 250px;
-  height: 100%;
   position: absolute;
   left: -250px;
   top: 0;
-  background-color: #fff;
-  transition: 0.5s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 250px;
+  height: 100%;
+  background-color: ${props => props.theme.colors.background};
+  font-family: 'TheJamsil3Regular';
+  transition: 0.5s ease;
   &.open {
     left: 0;
   }
 `
-
 const MenuItem = styled.div`
-  width: 40%;
-  height: 56px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  width: 40%;
+  height: 56px;
+  font-family: 'TheJamsil3Regular';
   &.user-info {
-    width: 100%;
-    height: 80px;
-    border-bottom: 1px solid #f15441;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    height: 80px;
+    background-color: ${props => props.theme.colors.primary};
+    color: #fff;
     svg {
+      position: relative;
+      left: 0;
       width: 48px;
       height: 48px;
       margin-right: 5px;
-      color: #f15441;
-      position: relative;
-      left: 0;
+      color: #fff;
     }
   }
   .login {
-    text-decoration: none;
-    color: #000;
     margin-left: 5px;
+    text-decoration: none;
+    color: ${props => props.theme.colors.text_secondary};
     &:hover {
-      color: #f15441;
+      color: ${props => props.theme.colors.orange};
     }
   }
   svg {
     width: 24px;
     height: 24px;
-    color: #7b7b7b;
+    color: ${props => props.theme.colors.text_secondary};
   }
 `
-
 const LogoutButton = styled.button`
   border: none;
   outline: none;
   background-color: transparent;
+  font-family: 'TheJamsil3Regular';
   font-size: 16px;
   &:hover {
-    color: #f15441;
+    color: ${props => props.theme.colors.orange};
   }
 `
