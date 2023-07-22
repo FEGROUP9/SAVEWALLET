@@ -3,7 +3,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import _ from 'lodash'
 import styled from 'styled-components'
-import { Header, Footer } from 'components/index'
+import { Header, Footer, ViewLogs } from 'components/index'
 import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
 import { EditModal } from 'components/index'
@@ -309,9 +309,7 @@ export const Calendar = () => {
   const [year, setYear] = useState(initialYear)
   const [month, setMonth] = useState(initialMonth)
 
-  const [monthExpenses, setMonthExpenses] = useState([])
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [selectedExpense] = useState<Expense>({} as Expense)
+  const [modalOpen, setModalOpen] = useState(false)
 
   const navigate = useNavigate()
   const calendarRef = useRef<FullCalendar>(null)
@@ -319,17 +317,7 @@ export const Calendar = () => {
   const USERID = `team9-${id}`
 
   const regex = /[^0-9]/g
-
-  const handleUpdate = (updatedExpense: Expense) => {
-    const updatedMonthExpenses = monthExpenses.map(dateExpenses => {
-      const updatedExpenses = dateExpenses.map(expense =>
-        expense._id === updatedExpense._id ? updatedExpense : expense
-      )
-
-      return { ...dateExpenses, [updatedExpenses[0].date]: updatedExpenses }
-    })
-    setMonthExpenses(updatedMonthExpenses)
-  }
+  const closeModal = () => setModalOpen(false)
 
   useEffect(() => {
     /**날짜별 소비 달력 표시 함수*/
@@ -361,7 +349,7 @@ export const Calendar = () => {
             })
           })
         })
-
+        console.log(newEvents)
         setEvents(newEvents)
       }
     }
@@ -441,18 +429,11 @@ export const Calendar = () => {
             }
           }}
           eventClick={() => {
-            setEditModalOpen(true)
-            // handleEditExpense()
+            setModalOpen(true)
           }}
           // 모달 [컨텐츠 - 수정,삭제,취소 버튼]
         />
-        {editModalOpen && (
-          <EditModal
-            closeModal={() => setEditModalOpen(false)}
-            expense={selectedExpense}
-            onUpdateExpense={handleUpdate}
-          />
-        )}
+        {modalOpen && <ViewLogs closeModal={closeModal} />}
       </Wrapper>
       <Footer />
     </>
