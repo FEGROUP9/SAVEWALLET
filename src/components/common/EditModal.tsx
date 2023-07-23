@@ -15,7 +15,7 @@ export const EditModal: React.FC<EditModalProps> = ({
 }) => {
   const [editedExpense, setEditedExpense] = useState<Expense>(expense)
   const [selectAmount, setSelectAmount] = useState(true)
-  const [account, setAccount] = useState('')
+  const [account, setAccount] = useState(editedExpense.category.split('.')[1])
 
   useEffect(() => {
     setSelectAmount(expense.amount >= 0)
@@ -36,6 +36,7 @@ export const EditModal: React.FC<EditModalProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target
+
     setEditedExpense(prevExpense => ({
       ...prevExpense,
       [name]: value
@@ -48,15 +49,25 @@ export const EditModal: React.FC<EditModalProps> = ({
   }
 
   const handleClickSaveButton = async () => {
-    //예외처리(수정날짜 유효성검사, 내역(CATEGORY) 미입력, 금액 미입력)
     if (editedExpense.date.trim() === '') {
       alert('다시 입력해주세요.')
+      return
+    }
+    const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/
+    if (!dateRegex.test(editedExpense.date)) {
+      alert('올바른 날짜 형식으로 입력해주세요.')
+      return
+    }
+
+    const amountValue = Number(editedExpense.amount)
+    if (isNaN(amountValue)) {
+      alert('금액은 숫자만 입력 가능합니다.')
       return
     }
 
     const updatedExpense = {
       ...editedExpense,
-      category: `${editedExpense.category}${account}`
+      category: `${editedExpense.category}.${account}`
     }
 
     const res = await EditExpenseList(editedExpense._id, editedExpense)
@@ -88,7 +99,7 @@ export const EditModal: React.FC<EditModalProps> = ({
         <InputWrapper>
           <Title>금액 :</Title>
           <input
-            type="number"
+            type="text"
             name="amount"
             value={editedExpense.amount}
             onChange={handleChangeInputEditExpense}
@@ -100,6 +111,7 @@ export const EditModal: React.FC<EditModalProps> = ({
             className="account-input"
             name="account"
             type="text"
+            value={account}
             onChange={handleChangeAccountInput}
           />
         </InputWrapper>
@@ -117,8 +129,7 @@ export const EditModal: React.FC<EditModalProps> = ({
           <select
             name="category"
             onChange={handleChangeInputEditExpense}
-            value={editedExpense.category} // 기본값 설정
-          >
+            value={editedExpense.category}>
             <option value="카테고리">카테고리</option>
             <option value="식비">식비</option>
             <option value="생활/건강">생활/건강</option>
