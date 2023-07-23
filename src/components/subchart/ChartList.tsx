@@ -35,9 +35,12 @@ const ListItem = styled.li`
   }
 
   div {
-    margin: 0 auto;
-    width: 200px;
-    text-align: center;
+    p {
+      &:last-child {
+        font-weight: bold;
+        color: ${props => props.theme.colors.primary};
+      }
+    }
   }
 
   p {
@@ -81,8 +84,10 @@ export const ChartList: React.FC<ChartListProps> = ({ categoryExpenses }) => {
             return (
               <ListItem key={expense.date}>
                 <h3>{formattedDate}</h3>
-                <p>{expense.category}</p>
-                <p>{expense.subCategory}</p>
+                <div>
+                  <p>{expense.category}</p>
+                  <p>{expense.subCategory}</p>
+                </div>
                 <p>{expense.amount.toLocaleString()}원</p>
               </ListItem>
             )

@@ -119,8 +119,6 @@ export const SubChart = () => {
           }
           return false
         })
-        console.log('selected category는?:', selectedCategory)
-        console.log('filtered category는?:', filteredCategory)
 
         // Chart Data - Vertical Bar Chart
         const data: ChartData<'bar'> = {
@@ -147,8 +145,6 @@ export const SubChart = () => {
 
         setCategoryExpenses(filteredCategory)
         setSubChartData(data)
-        console.log(expensesData)
-        console.log(categoryExpenses)
       } catch (error) {
         console.log(error)
       }
