@@ -248,6 +248,7 @@ const ExpenseBoard = styled.div`
     border: none;
     background-color: transparent;
     font-size: 40px;
+    text-align: right;
     color: ${props => props.theme.colors.text_secondary};
     border-bottom: 2px solid #777777;
     &:focus {
