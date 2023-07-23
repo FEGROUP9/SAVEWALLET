@@ -50,6 +50,7 @@ const MonthButton = styled.button`
 `
 
 const CurMonth = styled.div`
+  font-family: 'TheJamsil5Bold';
   font-weight: bold;
   font-size: 30px;
 `

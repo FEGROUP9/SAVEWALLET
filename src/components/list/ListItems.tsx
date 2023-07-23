@@ -286,6 +286,7 @@ const MonthDate = styled.div`
   margin-left: 10px;
   font-weight: bold;
   padding: 10px;
+  font-family: 'TheJamsil5Bold';
 
   @media ${theme.mobile} {
     font-size: 14px;

@@ -63,12 +63,12 @@ const Title = styled.div`
   height: 8vh;
   width: 10vw;
   font-size: 22px;
-  font-weight: 300;
   margin: 22px;
   text-align: center;
   line-height: 8vh;
   border-radius: 10px;
   background-color: #fff;
+  font-family: 'TheJamsil1Thin';
 
   &:hover {
     cursor: pointer;
@@ -76,7 +76,7 @@ const Title = styled.div`
   &.active {
     background-color: ${props => props.theme.colors.primary};
     color: #fff;
-    font-weight: 700;
+    font-family: 'TheJamsil5Bold';
   }
   @media ${theme.laptop} {
     font-size: 20px;
