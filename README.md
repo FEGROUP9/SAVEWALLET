@@ -1,6 +1,4 @@
-# 가계구조대
-
-가계부 프로젝트 다슬님 일단 틀만 잡아뒀습니다.
+# 가계구조대(SAVEWALLET)
 
 ## 배포사이트
 
@@ -9,8 +7,8 @@
 <div style="display: flex">
 <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/>
 <img src="https://img.shields.io/badge/Typescript-3178C6?style=flat&logo=typescript&logoColor=white"/>
-
 </div>
+
 <div style="display: flex">
 <img src="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=Vite&logoColor=white"/>
 </div>

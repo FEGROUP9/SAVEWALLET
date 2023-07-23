@@ -230,7 +230,6 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   padding: 1rem;
-  box-sizing: border-box;
   background-color: #fff;
   font-family: 'TheJamsil3Regular';
 `
@@ -242,7 +241,6 @@ const ExpenseBoard = styled.div`
   max-width: 768px;
   height: 120px;
   padding: 30px;
-  box-sizing: border-box;
   margin-bottom: 5px;
   background-color: #fff;
   input {
@@ -268,7 +266,6 @@ const ExpenseInputs = styled.div`
   width: 100%;
   max-width: 768px;
   height: 100%;
-  box-sizing: border-box;
   padding: 20px;
   background-color: #fff;
 `
@@ -339,6 +336,7 @@ const AmountButton = styled.button`
   font-family: 'TheJamsil3Regular';
   font-size: 16px;
   color: ${props => props.theme.colors.text_secondary};
+  cursor: pointer;
   @media ${props => props.theme.tablet} {
     font-size: 16px;
   }
@@ -365,6 +363,10 @@ const SaveButton = styled.button`
   color: #fff;
   border: none;
   border-radius: ${props => props.theme.borderRadius};
+  cursor: pointer;
+  &:hover {
+    color: ${props => props.theme.colors.third};
+  }
   @media ${props => props.theme.tablet} {
     font-size: 20px;
   }
