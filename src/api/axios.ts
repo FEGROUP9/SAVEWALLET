@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const baseURL =
-  import.meta.env.VITE_API_BASE_URL || 'http://52.78.195.183:3003/api'
+  import.meta.env.VITE_API_BASE_URL || 'https://chickenlecture.xyz/api'
 
 export const baseInstance = axios.create({
   baseURL
