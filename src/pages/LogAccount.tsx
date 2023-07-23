@@ -109,194 +109,217 @@ export const LogAccount = () => {
   }
 
   return (
-    <Wrapper>
+    <Container>
       <Header>
         <NavLink to="/">
           <ArrowLeftIcon />
         </NavLink>
         지출/수입 입력
       </Header>
-      <ExpenseBoard>
-        <input
-          type="text"
-          value={expense}
-          onChange={handleChangeExpenseInput}
-          onKeyUp={inputNumberFormat}
-        />
-        <span className="monetary-unit">원</span>
-      </ExpenseBoard>
-      <ExpenseInputs>
-        <ExpenseInputRow>
-          <span className="label">분류</span>
-          <AmountButton
-            onClick={handleClickAmount}
-            className={selectAmount ? 'active' : ''}>
-            지출
-          </AmountButton>
-          <AmountButton
-            onClick={handleClickAmount}
-            className={selectAmount ? '' : 'active'}>
-            수입
-          </AmountButton>
-        </ExpenseInputRow>
-        <ExpenseInputRow>
-          <span className="label">카테고리</span>
-          <select
-            name=""
-            id=""
-            onChange={handleSelectCategory}>
-            <option value="카테고리">카테고리</option>
-            <option value="식비">식비</option>
-            <option value="생활/건강">생활/건강</option>
-            <option value="쇼핑">쇼핑</option>
-            <option value="교통">교통</option>
-            <option value="주거/통신">주거/통신</option>
-            <option value="금융">금융</option>
-            <option value="문화/여가">문화/여가</option>
-            <option value="교육/학습">교육/학습</option>
-            <option value="자녀/육아">자녀/육아</option>
-            <option value="경조/선물">경조/선물</option>
-          </select>
-        </ExpenseInputRow>
-        <ExpenseInputRow>
-          <span className="label">사용처</span>
+      <Wrapper>
+        <ExpenseBoard>
           <input
-            className="account-input"
             type="text"
-            onChange={handleChangeAccountInput}
+            value={expense}
+            onChange={handleChangeExpenseInput}
+            onKeyUp={inputNumberFormat}
           />
-        </ExpenseInputRow>
-        <ExpenseInputRow>
-          <span className="label">날짜</span>
-          <ThemeProvider theme={theme}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <MobileDatePicker
-                className="date-picker"
-                format="YYYY-MM-DD"
-                defaultValue={date}
-                onChange={newValue => setDate(newValue)}
-              />
-            </LocalizationProvider>
-          </ThemeProvider>
-        </ExpenseInputRow>
-        <ExpenseInputRow>
-          <span className="label">시간</span>
-          <ThemeProvider theme={theme}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <MobileTimePicker
-                className="time-picker"
-                defaultValue={time}
-                onChange={newValue => setTime(newValue)}
-              />
-            </LocalizationProvider>
-          </ThemeProvider>
-        </ExpenseInputRow>
-      </ExpenseInputs>
-      <SaveButton onClick={handleClickSaveButton}>저장</SaveButton>
-    </Wrapper>
+          <span className="monetary-unit">원</span>
+        </ExpenseBoard>
+        <ExpenseInputs>
+          <ExpenseInputRow>
+            <span className="label">분류</span>
+            <AmountButton
+              onClick={handleClickAmount}
+              className={selectAmount ? 'active' : ''}>
+              지출
+            </AmountButton>
+            <AmountButton
+              onClick={handleClickAmount}
+              className={selectAmount ? '' : 'active'}>
+              수입
+            </AmountButton>
+          </ExpenseInputRow>
+          <ExpenseInputRow>
+            <span className="label">카테고리</span>
+            <select
+              name=""
+              id=""
+              onChange={handleSelectCategory}>
+              <option value="카테고리">카테고리</option>
+              <option value="식비">식비</option>
+              <option value="생활/건강">생활/건강</option>
+              <option value="쇼핑">쇼핑</option>
+              <option value="교통">교통</option>
+              <option value="주거/통신">주거/통신</option>
+              <option value="금융">금융</option>
+              <option value="문화/여가">문화/여가</option>
+              <option value="교육/학습">교육/학습</option>
+              <option value="자녀/육아">자녀/육아</option>
+              <option value="경조/선물">경조/선물</option>
+            </select>
+          </ExpenseInputRow>
+          <ExpenseInputRow>
+            <span className="label">사용처</span>
+            <input
+              className="account-input"
+              type="text"
+              onChange={handleChangeAccountInput}
+            />
+          </ExpenseInputRow>
+          <ExpenseInputRow>
+            <span className="label">날짜</span>
+            <ThemeProvider theme={theme}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <MobileDatePicker
+                  className="date-picker"
+                  format="YYYY-MM-DD"
+                  defaultValue={date}
+                  onChange={newValue => setDate(newValue)}
+                />
+              </LocalizationProvider>
+            </ThemeProvider>
+          </ExpenseInputRow>
+          <ExpenseInputRow>
+            <span className="label">시간</span>
+            <ThemeProvider theme={theme}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <MobileTimePicker
+                  className="time-picker"
+                  defaultValue={time}
+                  onChange={newValue => setTime(newValue)}
+                />
+              </LocalizationProvider>
+            </ThemeProvider>
+          </ExpenseInputRow>
+        </ExpenseInputs>
+        <SaveButton onClick={handleClickSaveButton}>저장</SaveButton>
+      </Wrapper>
+    </Container>
   )
 }
 
-const Wrapper = styled.div`
-  position: absolute;
-  width: 100%;
-  min-height: calc(var(--vh, 1vh) * 100);
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-sizing: border-box;
-  background-color: #fff;
 `
-
 const Header = styled.div`
-  width: 100%;
-  height: 64px;
-  max-width: 768px;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fff;
-  border-bottom: 1px solid #f15441;
-  position: relative;
+  width: 100%;
+  max-width: 768px;
+  height: 64px;
+  background-color: ${props => props.theme.colors.primary};
+  font-size: 18px;
+  color: #fff;
   svg {
     position: absolute;
     left: 10px;
-    margin-top: -16px;
     width: 32px;
     height: 32px;
-    color: #f15441;
+    margin-top: -16px;
+    color: #fff;
   }
+`
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: #fff;
+  font-family: 'TheJamsil3Regular';
 `
 
 const ExpenseBoard = styled.div`
-  width: 100%;
-  max-width: 768px;
-  height: 150px;
   display: flex;
   align-items: center;
+  width: 100%;
+  max-width: 768px;
+  height: 120px;
   padding: 30px;
   box-sizing: border-box;
-  background-color: #f4f4f5;
+  margin-bottom: 5px;
+  background-color: #fff;
   input {
+    width: 100%;
     border: none;
     background-color: transparent;
     font-size: 40px;
-    text-align: right;
-    width: 100%;
-    border-bottom: 2px solid #f15441;
+    color: ${props => props.theme.colors.text_secondary};
+    border-bottom: 2px solid #777777;
     &:focus {
       outline: none;
     }
   }
   .monetary-unit {
     font-size: 35px;
+    color: #777777;
   }
 `
 const ExpenseInputs = styled.div`
-  width: 100%;
-  height: 100%;
-  max-width: 768px;
-  background-color: #fff;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 20px;
-  box-sizing: border-box;
-`
-
-const ExpenseInputRow = styled.div`
-  height: 100%;
+  width: 100%;
   max-width: 768px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: #fff;
+`
+const ExpenseInputRow = styled.div`
   display: flex;
   align-items: center;
+  height: 100%;
+  max-width: 768px;
   .label {
     width: 120px;
     flex-shrink: 0;
+    color: ${props => props.theme.colors.text_secondary};
+    @media ${props => props.theme.tablet} {
+      font-size: 16px;
+    }
+    @media ${props => props.theme.laptop} {
+      font-size: 18px;
+    }
+    @media ${props => props.theme.desktop} {
+      font-size: 18px;
+    }
   }
   .account-input {
     height: 45px;
     width: 100%;
+    padding: 5px;
+    padding-left: 15px;
     border: 1px solid #c4c4c4;
     border-radius: 4px;
-    padding: 5px;
+    font-family: 'TheJamsil1Thin';
+    font-weight: 600;
+    color: ${props => props.theme.colors.text_secondary};
     &:hover {
       border: 1px solid #212121;
     }
     &:focus {
-      border: 1px solid #f15441;
-      outline: 1px solid #f15441;
+      border: 1px solid ${props => props.theme.colors.orange};
+      outline: 1px solid ${props => props.theme.colors.orange};
     }
   }
   select {
     height: 55px;
-    width: 200px;
     width: 100%;
-
+    padding-left: 10px;
     border: 1px solid #c4c4c4;
     border-radius: 4px;
+    font-family: 'TheJamsil1Thin';
+    font-weight: 600;
     &:focus {
-      border: 1px solid #f15441;
-      outline: 1px solid #f15441;
+      border: 1px solid ${props => props.theme.colors.orange};
+      outline: 1px solid ${props => props.theme.colors.orange};
     }
   }
   .date-picker {
@@ -306,41 +329,61 @@ const ExpenseInputRow = styled.div`
     width: 100%;
   }
 `
-
 const AmountButton = styled.button`
-  width: 90px;
+  width: 100px;
   height: 55px;
-  border-radius: 4px;
-  border: 1px solid #c4c4c4;
-  background-color: #fff;
   margin-right: 5px;
+  border-radius: 36px;
+  border: none;
+  background-color: ${props => props.theme.colors.background};
+  font-family: 'TheJamsil3Regular';
+  font-size: 16px;
+  color: ${props => props.theme.colors.text_secondary};
+  @media ${props => props.theme.tablet} {
+    font-size: 16px;
+  }
+  @media ${props => props.theme.laptop} {
+    font-size: 18px;
+  }
+  @media ${props => props.theme.desktop} {
+    font-size: 18px;
+  }
   &.active {
-    border: 2px solid #f15441;
+    border: 2px solid ${props => props.theme.colors.primary};
+    background-color: ${props => props.theme.colors.primary};
+    color: #fff;
   }
 `
-
 const SaveButton = styled.button`
-  border: none;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
   width: 80%;
+  max-width: calc(768px * 0.8);
   height: 64px;
-  background-color: #f15441;
-  max-width: 768px;
+  margin-top: 2rem;
+  background-color: ${props => props.theme.colors.text_secondary};
+  font-family: 'TheJamsil3Regular';
   font-size: 18px;
   color: #fff;
-  border-radius: 6px;
+  border: none;
+  border-radius: ${props => props.theme.borderRadius};
+  @media ${props => props.theme.tablet} {
+    font-size: 20px;
+  }
+  @media ${props => props.theme.laptop} {
+    font-size: 20px;
+  }
+  @media ${props => props.theme.desktop} {
+    font-size: 20px;
+  }
 `
-
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#f15441',
-      dark: '#f15441',
+      main: '#fda363',
+      dark: '#fda363',
       contrastText: '#fff'
     },
     secondary: {
-      main: '#f15441',
+      main: '#fda363',
       contrastText: '#fff'
     }
   }

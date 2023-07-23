@@ -1,5 +1,5 @@
 import { MenuIcon, CalendarIcon, ViewListIcon } from '@heroicons/react/outline'
-import { ChartBarIcon } from '@heroicons/react/solid'
+import { ChartPieIcon } from '@heroicons/react/solid'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
@@ -178,34 +178,41 @@ export const Home = () => {
         <MenuIcon />
       </MenuButton>
       <HeadLine>
-        지출, 수입을 기록하고 <br />
-        손쉽게 재정을 추적하고
+        <span>지출</span>, <span>수입</span>을 기록하고 <br />
+        손쉽게 <span>재정</span>을 <span>추적</span>하고
         <br />
         효과적으로 관리하세요.
       </HeadLine>
-      <TabMenu>
-        {tabList.map((el, index) => (
-          <li
-            key={index}
-            className={index === currentTab ? 'submenu focused' : 'submenu'}
-            onClick={() => handleSelectTab(index)}>
-            {el.name}
-          </li>
-        ))}
-        <span className="date-month">{thisMonth}</span>
-      </TabMenu>
-      <TabContent>
-        <TabContentItem>
-          <span className="label">이번 달</span>
-          <span className="amount">{tabList[currentTab].month}</span>
-          <span className="monetary-unit">원</span>
-        </TabContentItem>
-        <TabContentItem>
-          <span className="label">오늘</span>
-          <span className="amount">{tabList[currentTab].today}</span>
-          <span className="monetary-unit">원</span>
-        </TabContentItem>
-      </TabContent>
+      <TabBackground>
+        <TabMenu>
+          {tabList.map((el, index) => (
+            <li
+              key={index}
+              className={index === currentTab ? 'submenu focused' : 'submenu'}
+              onClick={() => handleSelectTab(index)}>
+              {el.name}
+            </li>
+          ))}
+          <span className="date-month">{thisMonth}</span>
+        </TabMenu>
+        <TabContent>
+          <TabContentItem>
+            <span className="label">이번 달</span>
+            <span className="amount">
+              {tabList[currentTab].month}
+              <span className="monetary-unit">원</span>
+            </span>
+          </TabContentItem>
+          <TabContentItem>
+            <span className="label">오늘</span>
+            <span className="amount">
+              {tabList[currentTab].today}
+              <span className="monetary-unit">원</span>
+            </span>
+          </TabContentItem>
+        </TabContent>
+      </TabBackground>
+
       <Nav>
         <NavButton onClick={handleClickNavButton}>
           <ViewListIcon />
@@ -216,7 +223,7 @@ export const Home = () => {
           달력
         </NavButton>
         <NavButton onClick={handleClickNavButton}>
-          <ChartBarIcon />
+          <ChartPieIcon />
           지출 분석
         </NavButton>
       </Nav>
@@ -231,22 +238,24 @@ export const Home = () => {
 
 const Wrapper = styled.div`
   position: absolute;
-  width: 100%;
-  min-height: calc(var(--vh, 1vh) * 100);
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  min-height: calc(var(--vh, 1vh) * 100);
   box-sizing: border-box;
-  padding: 2rem;
-  background-color: #f4f4f5;
+  padding: 1rem;
+  background-color: ${props => props.theme.colors.background};
+  font-family: 'TheJamsil3Regular';
 `
-
 const MenuButton = styled.div`
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
   width: 24px;
   height: 24px;
-  position: absolute;
-  left: 10px;
-  top: 10px;
+  cursor: pointer;
+  color: ${props => props.theme.colors.text_secondary};
   @media ${props => props.theme.tablet} {
     width: 32px;
     height: 32px;
@@ -260,89 +269,124 @@ const MenuButton = styled.div`
     height: 32px;
   }
 `
-
 const HeadLine = styled.div`
-  font-size: 24px;
-  font-weight: 700;
-  font-family: 'TheJamsil5Bold';
-  line-height: 1.4;
-  margin-bottom: 50px;
-  margin-top: 20px;
+  position: relative;
   width: 100%;
   max-width: 768px;
-  position: relative;
-  p {
-    position: absolute;
-    right: 37px;
-    bottom: 0;
-    font-size: 12px;
+  margin-bottom: 30px;
+  margin-top: 40px;
+  font-size: 24px;
+  line-height: 1.4;
+  color: ${props => props.theme.colors.text_secondary};
+  span {
+    color: ${props => props.theme.colors.third};
   }
-  img {
-    position: absolute;
-    right: 0;
-    bottom: -5px;
-    width: 32px;
-    height: 32px;
+  @media ${props => props.theme.tablet} {
+    font-size: 28px;
+  }
+  @media ${props => props.theme.laptop} {
+    font-size: 30px;
+  }
+  @media ${props => props.theme.desktop} {
+    font-size: 30px;
   }
 `
-
+const TabBackground = styled.div`
+  width: 100%;
+  max-width: 768px;
+  border-radius: ${props => props.theme.borderRadius};
+  background: rgb(100, 113, 233);
+  background: linear-gradient(
+    329deg,
+    rgba(100, 113, 233, 1) 18%,
+    rgba(82, 98, 231, 1) 33%,
+    rgba(112, 123, 214, 1) 82%,
+    rgba(103, 112, 200, 1) 89%,
+    rgba(100, 103, 156, 1) 100%
+  );
+`
 const TabMenu = styled.ul`
   position: relative;
-  width: 100%;
-  height: 48px;
-  flex-shrink: 0;
-  max-width: 768px;
-  background-color: #fff;
-  color: #b7b7b7;
-  font-weight: bold;
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
+  max-width: 768px;
+  height: 48px;
+  flex-shrink: 0;
+  background-color: transparent;
+  color: #fff;
   list-style: none;
+  border-top-left-radius: ${props => props.theme.borderRadius};
+  border-top-right-radius: ${props => props.theme.borderRadius};
+  @media ${props => props.theme.tablet} {
+    height: 80px;
+  }
+  @media ${props => props.theme.laptop} {
+    height: 80px;
+  }
+  @media ${props => props.theme.desktop} {
+    height: 80px;
+  }
   .submenu {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100px;
     height: 100%;
-    font-size: 14px;
+    box-sizing: border-box;
+    font-family: 'TheJamsil3Regular';
+    font-size: 18px;
     transition: 0.5s;
+    border-top-left-radius: ${props => props.theme.borderRadius};
+    cursor: pointer;
     @media ${props => props.theme.tablet} {
-      width: calc(100% / 3);
-      font-size: 20px;
+      width: calc(100% / 4);
+      font-size: 28px;
     }
     @media ${props => props.theme.laptop} {
-      width: calc(100% / 3);
-      font-size: 20px;
+      width: calc(100% / 4);
+      font-size: 28px;
     }
     @media ${props => props.theme.desktop} {
-      width: calc(100% / 3);
-      font-size: 20px;
+      width: calc(100% / 4);
+      font-size: 28px;
     }
   }
   .focused {
-    border-bottom: 2px solid #000;
-    color: #000;
+    border-bottom: 1px solid #fff;
+    color: #fff;
   }
   .date-month {
     position: absolute;
-    font-size: 18px;
-    color: #000;
-    font-weight: 400;
     right: 20px;
+    font-family: 'TheJamsil1Thin';
+    font-size: 16px;
+    color: #fff;
+    @media ${props => props.theme.tablet} {
+      font-size: 26px;
+    }
+    @media ${props => props.theme.laptop} {
+      font-size: 26px;
+    }
+    @media ${props => props.theme.desktop} {
+      font-size: 26px;
+    }
   }
 `
 const TabContent = styled.div`
-  flex-shrink: 0;
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: #fff;
-  height: 180px;
-  width: 100%;
-  max-width: 768px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 768px;
+  height: 180px;
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: transparent;
+  border-bottom-left-radius: ${props => props.theme.borderRadius};
+  border-bottom-right-radius: ${props => props.theme.borderRadius};
   @media ${props => props.theme.tablet} {
     height: 300px;
   }
@@ -353,46 +397,43 @@ const TabContent = styled.div`
     height: 300px;
   }
 `
-
 const TabContentItem = styled.div`
-  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 5px;
-  position: relative;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem;
+  color: #fff;
   .label {
-    font-size: 16px;
-    font-weight: 700;
-    position: absolute;
-    left: 0;
+    font-family: 'TheJamsil3Regular';
+    font-size: 18px;
     @media ${props => props.theme.tablet} {
-      font-size: 30px;
+      font-size: 28px;
     }
     @media ${props => props.theme.laptop} {
-      font-size: 30px;
+      font-size: 28px;
     }
     @media ${props => props.theme.desktop} {
-      font-size: 30px;
+      font-size: 28px;
     }
   }
   .amount {
     font-size: 32px;
-    color: #f15441;
-    justify-content: flex-end;
+    color: #fff;
     @media ${props => props.theme.tablet} {
-      font-size: 50px;
+      font-size: 45px;
     }
     @media ${props => props.theme.laptop} {
-      font-size: 50px;
+      font-size: 45px;
     }
     @media ${props => props.theme.desktop} {
-      font-size: 50px;
+      font-size: 45px;
     }
   }
   .monetary-unit {
-    font-size: 16px;
-    align-self: flex-end;
+    margin-left: 5px;
+    font-size: 18px;
     @media ${props => props.theme.tablet} {
       font-size: 30px;
     }
@@ -404,54 +445,72 @@ const TabContentItem = styled.div`
     }
   }
 `
-
 const Nav = styled.div`
-  max-width: 768px;
-  flex-shrink: 0;
-  margin-top: 10px;
-  margin-bottom: 50px;
-  width: 100%;
-  height: 64px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: #fff;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 10px;
+  width: 100%;
+  max-width: 768px;
   height: 120px;
   box-sizing: border-box;
+  margin-top: 10px;
+  margin-bottom: 50px;
+  border-radius: ${props => props.theme.borderRadius};
 `
-
 const NavButton = styled.div`
   display: flex;
   flex-direction: column;
-  text-decoration: none;
   align-items: center;
   justify-content: center;
-  width: 64px;
+  flex-grow: 1;
   height: 64px;
-  font-size: 12px;
-  color: #7b7b7b;
-  padding: 30px;
+  padding: 20px;
+  font-size: 14px;
+  text-decoration: none;
+  background-color: #fff;
+  border-radius: ${props => props.theme.borderRadius};
+  color: ${props => props.theme.colors.text_secondary};
+  cursor: pointer;
   svg {
-    width: 40px;
+    font-size: 30px;
+    color: ${props => props.theme.colors.text_secondary};
+    margin-bottom: 10px;
   }
-  &:last-child {
-    border: none;
+  @media ${props => props.theme.tablet} {
+    font-size: 18px;
+  }
+  @media ${props => props.theme.laptop} {
+    font-size: 18px;
+  }
+  @media ${props => props.theme.desktop} {
+    font-size: 18px;
   }
 `
-
 const AddButton = styled.button`
-  flex-shrink: 0;
-  width: 80%;
-  height: 64px;
-  background-color: ${props => props.theme.colors.primary};
-  border: none;
-  max-width: 768px;
-  font-size: 18px;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
+  width: 80%;
+  max-width: calc(768px * 0.8);
+  height: 64px;
+  box-sizing: border-box;
+  background-color: ${props => props.theme.colors.text_secondary};
+  border: none;
+  border-radius: ${props => props.theme.borderRadius};
+  font-family: 'TheJamsil3Regular';
+  font-size: 18px;
   text-decoration: none;
   color: #fff;
-  border-radius: 6px;
-  box-sizing: border-box;
+  @media ${props => props.theme.tablet} {
+    font-size: 20px;
+  }
+  @media ${props => props.theme.laptop} {
+    font-size: 20px;
+  }
+  @media ${props => props.theme.desktop} {
+    font-size: 20px;
+  }
 `
