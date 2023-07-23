@@ -29,3 +29,10 @@ export interface Expense {
   date: string
   __v: number
 }
+
+export interface CalendarEvent {
+  title: string
+  date?: string
+  allDay?: boolean
+  start?: string
+}

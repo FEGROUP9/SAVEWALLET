@@ -3,12 +3,12 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import _ from 'lodash'
 import styled from 'styled-components'
-import { Header, Footer } from 'components/index'
+import { Header, Footer, ViewLogs } from 'components/index'
 import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
 import { EditModal } from 'components/index'
 import { useNavigate } from 'react-router-dom'
-import { MonthlyExpenses, Expense } from 'api/index'
+import { Expense, CalendarEvent } from 'api/index'
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -304,63 +304,58 @@ const initialYear = date.getFullYear()
 const initialMonth = date.getMonth() + 1
 
 export const Calendar = () => {
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useState<CalendarEvent[]>([])
   //캘린더 이전/다음달 변경시 년/월 정보
   const [year, setYear] = useState(initialYear)
   const [month, setMonth] = useState(initialMonth)
 
-  const [monthExpenses, setMonthExpenses] = useState<MonthlyExpenses[]>([])
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [selectedExpense, setSelectedExpense] = useState<Expense>({} as Expense)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedExpense, setSelectedExpense] = useState({})
 
   const navigate = useNavigate()
-  const calendarRef = useRef({})
+  const calendarRef = useRef<FullCalendar>(null)
   const id = localStorage.getItem('id')
   const USERID = `team9-${id}`
 
   const regex = /[^0-9]/g
+  const closeModal = () => setModalOpen(false)
 
-  const handleUpdate = (updatedExpense: Expense) => {
-    const updatedMonthExpenses = monthExpenses.map(dateExpenses => {
-      const updatedExpenses = dateExpenses.map(expense =>
-        expense._id === updatedExpense._id ? updatedExpense : expense
-      )
-
-      return { ...dateExpenses, [updatedExpenses[0].date]: updatedExpenses }
-    })
-    setMonthExpenses(updatedMonthExpenses)
-  }
-  //수정/삭제시 마지막 초기화 setEvetns('') RECOIL?
   useEffect(() => {
     /**날짜별 소비 달력 표시 함수*/
-    if (id) {
-      const renderDailyExpenses = async () => {
-        console.log(USERID)
-        let expenses = await getMonthlyExpenses(year, month, USERID)
-
-        Object.values(expenses).map((i: Expense[]) =>
-          i.map(v => {
-            setEvents(prevEvents => [
-              ...prevEvents,
-              {
-                title: v.category,
-                date: v.date.replace('Z', '')
-              },
-              {
-                allDay: true,
-                title: v.amount.toLocaleString() + '원',
-                start: v.date.replace('Z', '')
-              }
-            ])
-          })
-        )
+    const renderDailyExpenses = async () => {
+      if (!id) {
+        alert('로그인이 필요합니다.')
+        navigate('/signin')
+        return
       }
-      renderDailyExpenses()
+
+      if (id) {
+        const expenses = await getMonthlyExpenses(year, month, USERID)
+
+        const newEvents: CalendarEvent[] = []
+
+        Object.keys(expenses).forEach((date: string) => {
+          const monthlyExpenses: Expense[] = expenses[date]
+          console.log(monthlyExpenses)
+          monthlyExpenses.forEach((expense: Expense) => {
+            newEvents.push({
+              title: expense.category,
+              date: expense.date.replace('Z', '')
+            })
+
+            newEvents.push({
+              title: `${expense.amount.toLocaleString()}원`,
+              allDay: true,
+              start: expense.date.replace('Z', '')
+            })
+          })
+        })
+        console.log(newEvents)
+        setEvents(newEvents)
+      }
     }
-    if (!id) {
-      alert('로그인이 필요합니다.')
-      navigate('/signin')
-    }
+
+    renderDailyExpenses()
   }, [year, month, id])
   return (
     <>
@@ -390,7 +385,7 @@ export const Calendar = () => {
             prevBtn: {
               icon: 'chevron-left',
               click: () => {
-                if (calendarRef) {
+                if (calendarRef.current?.getApi()) {
                   calendarRef.current.getApi().prev()
                   const calendarMonth = _.get(
                     calendarRef.current.getApi(), //DOM의 정보 가져옴
@@ -413,7 +408,7 @@ export const Calendar = () => {
             nextBtn: {
               icon: 'chevron-right',
               click: () => {
-                if (calendarRef) {
+                if (calendarRef.current?.getApi()) {
                   calendarRef.current.getApi().next()
                   const calendarMonth = _.get(
                     calendarRef.current.getApi(), //DOM의 정보 가져옴
@@ -434,17 +429,17 @@ export const Calendar = () => {
               }
             }
           }}
-          eventClick={() => {
-            setEditModalOpen(true)
-            // handleEditExpense()
+          eventClick={event => {
+            setModalOpen(true)
+            console.log(event.event)
+            setSelectedExpense(event.event)
           }}
           // 모달 [컨텐츠 - 수정,삭제,취소 버튼]
         />
-        {editModalOpen && (
-          <EditModal
-            closeModal={() => setEditModalOpen(false)}
+        {modalOpen && (
+          <ViewLogs
+            closeModal={closeModal}
             expense={selectedExpense}
-            onUpdateExpense={handleUpdate}
           />
         )}
       </Wrapper>
