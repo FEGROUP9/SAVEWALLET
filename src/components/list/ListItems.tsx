@@ -161,10 +161,10 @@ export default function ListItems() {
                         <MonthDate>
                           {monthFilter}월 {date}일
                         </MonthDate>
-                        <Title style={{ color: '#81c147' }}>
+                        <Title style={{ color: '#6471e9' }}>
                           수입: {formatNumber(income)}원
                         </Title>
-                        <Title style={{ color: '#ff4040' }}>
+                        <Title style={{ color: '#fc6262' }}>
                           지출: {formatNumber(spend)}원
                         </Title>
                         <Title>합계: {formatNumber(income + spend)}원</Title>
@@ -185,7 +185,7 @@ export default function ListItems() {
                             <Expenditure
                               style={{
                                 color:
-                                  expense.amount > 0 ? '#81c147' : '#ff4040'
+                                  expense.amount > 0 ? '#6471e9' : '#fc6262'
                               }}>
                               {formatNumber(expense.amount)}원
                             </Expenditure>
@@ -228,56 +228,53 @@ export default function ListItems() {
   )
 }
 const Wrapper = styled.div`
-  background-color: #f4f4f5;
+  background-color: ${props => props.theme.colors.background};
 `
 
 const ExpenseList = styled.div`
   width: 60vw;
   height: 75vh;
-  border: 2px solid black;
-  margin: 50px auto;
+  border: 2px solid #212121;
+  margin: 20px auto;
   margin-bottom: 0px;
   overflow: auto;
-  background-color: white;
+  background-color: #fff;
   border-radius: 5px;
-
-  @media ${theme.laptop} {
+  align-items: center;
+  @media ${props => props.theme.laptop} {
     width: 50vw;
     height: 75vh;
   }
 
-  @media ${theme.desktop} {
+  @media ${props => props.theme.desktop} {
     width: 60vw;
     height: 75vh;
   }
-  @media ${theme.tablet} {
+  @media ${props => props.theme.tablet} {
     width: 70vw;
     height: 70vh;
   }
 
-  @media ${theme.mobile} {
+  @media ${props => props.theme.mobile} {
     width: 90vw;
     height: 70vh;
   }
 `
 
 const DateRow = styled.div`
-  border-top: 2px solid grey;
-  border-bottom: 2px solid grey;
+  border-top: 2px solid #c4c4c4;
+  border-bottom: 2px solid #c4c4c4;
   display: flex;
-  margin: -2px;
-  padding: 10px;
   height: 25px;
   align-items: center;
   justify-content: flex-end;
-  padding: 10px;
 `
 
 const MonthDate = styled.div`
   margin-right: auto;
-  margin-left: 20px;
+  margin-left: 10px;
   font-weight: bold;
-  font-size: 16px;
+  padding: 10px;
 
   @media ${theme.mobile} {
     font-size: 14px;
@@ -294,19 +291,19 @@ const Title = styled.span`
   font-size: 13px;
   width: 120px;
 
-  @media ${theme.desktop} {
+  @media ${props => props.theme.desktop} {
     width: 100px;
   }
 
-  @media ${theme.laptop} {
+  @media ${props => props.theme.laptop} {
     width: 110px;
   }
 
-  @media ${theme.tablet} {
+  @media ${props => props.theme.tablet} {
     width: 100px;
   }
 
-  @media ${theme.mobile} {
+  @media ${props => props.theme.mobile} {
     font-size: 12px;
     width: 90px;
   }
@@ -318,11 +315,11 @@ const Category = styled.div`
   justify-content: center;
   font-weight: 400;
   margin-right: 10px;
-  color: white;
+  color: #fff;
   font-size: 13px;
   width: 60px;
   height: 20px;
-  background-color: #81c147;
+  background-color: ${props => props.theme.colors.green};
   border-radius: 15px;
 `
 
@@ -330,7 +327,7 @@ const History = styled.div`
   font-weight: 300;
   font-size: 13px;
 
-  @media ${theme.mobile} {
+  @media ${props => props.theme.mobile} {
     font-size: 12px;
   }
 `
@@ -338,12 +335,11 @@ const History = styled.div`
 const Expenditure = styled.div`
   margin-left: auto;
   font-weight: bold;
-
   margin-right: 10px;
   font-size: 13px;
   font-weight: 500;
 
-  @media ${theme.mobile} {
+  @media ${props => props.theme.mobile} {
     font-size: 12px;
   }
 `
@@ -357,7 +353,7 @@ const ErrorMsg = styled.div`
 `
 const Line = styled.hr`
   width: 90%;
-  border: 1px solid grey;
+  border: 1px solid #c4c4c4;
   margin: auto 0;
 `
 const LineContainer = styled.div`
@@ -370,7 +366,7 @@ const ModifyButton = styled.button`
   align-items: center;
   justify-content: center;
   border: none;
-  background-color: white;
+  background-color: #fff;
   svg {
     width: 20px;
     &:hover {
