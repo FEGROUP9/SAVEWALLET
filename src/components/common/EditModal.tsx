@@ -173,7 +173,7 @@ const Title = styled.div`
 const ModalContent = styled.div`
   background-color: #fff;
   padding: 30px;
-  width: 300px;
+  width: 310px;
   line-height: 45px;
   border-radius: 6px;
 `
