@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
-  background-color: #f4f4f5;
+  background-color: ${props => props.theme.colors.background};
   font-family: 'TheJamsil1Thin', 'TheJamsil5Bold';
   .fc {
     width: 100%;

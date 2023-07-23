@@ -3,7 +3,7 @@ import { ChevronLeftIcon } from '@heroicons/react/outline'
 import { useNavigate } from 'react-router-dom'
 const Wrapper = styled.div`
   display: flex;
-  background-color: #f4f4f5;
+  background-color: ${props => props.theme.colors.background};
   padding: 60px;
   justify-content: center;
   .backwards {

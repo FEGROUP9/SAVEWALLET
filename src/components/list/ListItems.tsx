@@ -156,18 +156,20 @@ export default function ListItems() {
                   const expenses = monthExpenses[date]
                   const { income, spend } = sumAmountByDate(monthExpenses, date)
                   return (
-                    <div key={date}>
+                    <div
+                      key={date}
+                      className="divider">
                       <DateRow>
                         <MonthDate>
                           {monthFilter}월 {date}일
                         </MonthDate>
                         <Title style={{ color: '#6471e9' }}>
-                          수입: {formatNumber(income)}원
+                          수입 : {formatNumber(income)}원
                         </Title>
                         <Title style={{ color: '#fc6262' }}>
-                          지출: {formatNumber(spend)}원
+                          지출 : {formatNumber(spend)}원
                         </Title>
-                        <Title>합계: {formatNumber(income + spend)}원</Title>
+                        <Title>합계 : {formatNumber(income + spend)}원</Title>
                       </DateRow>
                       {expenses.map((expense, index) => (
                         <React.Fragment key={expense._id}>
@@ -176,11 +178,11 @@ export default function ListItems() {
                               {getCategoryIncluded(expense) || '카테고리'}
                             </Category>
                             <History>
-                              내역:
-                              {(getCategoryExcluded(expense) || '없음').replace(
-                                '.',
-                                ''
-                              )}
+                              내역 :
+                              {' ' +
+                                (
+                                  getCategoryExcluded(expense) || '없음'
+                                ).replace('.', '')}
                             </History>
                             <Expenditure
                               style={{
@@ -201,9 +203,7 @@ export default function ListItems() {
                             />
                           </CategoryRow>
                           {index < expenses.length - 1 && (
-                            <LineContainer>
-                              <Line />
-                            </LineContainer>
+                            <LineContainer>{/* <Line /> */}</LineContainer>
                           )}
                         </React.Fragment>
                       ))}
@@ -229,18 +229,28 @@ export default function ListItems() {
 }
 const Wrapper = styled.div`
   background-color: ${props => props.theme.colors.background};
+  .divider {
+    border-top: 1px solid #c4c4c4;
+    &:first-child {
+      border: none;
+    }
+    &:last-child {
+      border-bottom: 1px solid #c4c4c4;
+    }
+  }
 `
 
 const ExpenseList = styled.div`
   width: 60vw;
   height: 75vh;
-  border: 2px solid #212121;
+  border: 3px solid ${props => props.theme.colors.primary};
   margin: 20px auto;
   margin-bottom: 0px;
   overflow: auto;
   background-color: #fff;
-  border-radius: 5px;
+  border-radius: 12px;
   align-items: center;
+
   @media ${props => props.theme.laptop} {
     width: 50vw;
     height: 75vh;
@@ -262,8 +272,9 @@ const ExpenseList = styled.div`
 `
 
 const DateRow = styled.div`
-  border-top: 2px solid #c4c4c4;
-  border-bottom: 2px solid #c4c4c4;
+  /* border-bottom: 2px solid #c4c4c4; */
+  padding: 10px;
+  box-sizing: content-box;
   display: flex;
   height: 25px;
   align-items: center;
@@ -290,22 +301,18 @@ const CategoryRow = styled.div`
 const Title = styled.span`
   font-size: 13px;
   width: 120px;
-
-  @media ${props => props.theme.desktop} {
-    width: 100px;
-  }
-
+  font-family: 'TheJamsil3Regular';
   @media ${props => props.theme.laptop} {
     width: 110px;
   }
 
   @media ${props => props.theme.tablet} {
-    width: 100px;
+    width: 110px;
   }
 
   @media ${props => props.theme.mobile} {
-    font-size: 12px;
-    width: 90px;
+    font-size: 11px;
+    width: 110px;
   }
 `
 
@@ -326,7 +333,7 @@ const Category = styled.div`
 const History = styled.div`
   font-weight: 300;
   font-size: 13px;
-
+  font-family: 'TheJamsil3Regular';
   @media ${props => props.theme.mobile} {
     font-size: 12px;
   }
@@ -351,11 +358,11 @@ const ErrorMsg = styled.div`
   justify-content: center;
   margin-top: 50px;
 `
-const Line = styled.hr`
-  width: 90%;
-  border: 1px solid #c4c4c4;
-  margin: auto 0;
-`
+// const Line = styled.hr`
+//   width: 90%;
+//   border: 1px solid #c4c4c4;
+//   margin: auto 0;
+// `
 const LineContainer = styled.div`
   display: flex;
   justify-content: flex-end;
