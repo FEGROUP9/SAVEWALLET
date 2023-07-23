@@ -243,7 +243,6 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   min-height: calc(var(--vh, 1vh) * 100);
-  box-sizing: border-box;
   padding: 1rem;
   background-color: ${props => props.theme.colors.background};
   font-family: 'TheJamsil3Regular';
@@ -334,7 +333,6 @@ const TabMenu = styled.ul`
     align-items: center;
     width: 100px;
     height: 100%;
-    box-sizing: border-box;
     font-family: 'TheJamsil3Regular';
     font-size: 18px;
     transition: 0.5s;
@@ -382,7 +380,6 @@ const TabContent = styled.div`
   width: 100%;
   max-width: 768px;
   height: 180px;
-  box-sizing: border-box;
   padding: 20px;
   background-color: transparent;
   border-bottom-left-radius: ${props => props.theme.borderRadius};
@@ -402,7 +399,6 @@ const TabContentItem = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  box-sizing: border-box;
   padding: 1rem;
   color: #fff;
   .label {
@@ -454,7 +450,6 @@ const Nav = styled.div`
   width: 100%;
   max-width: 768px;
   height: 120px;
-  box-sizing: border-box;
   margin-top: 10px;
   margin-bottom: 50px;
   border-radius: ${props => props.theme.borderRadius};
@@ -465,7 +460,9 @@ const NavButton = styled.div`
   align-items: center;
   justify-content: center;
   flex-grow: 1;
+  flex-basis: 0;
   height: 64px;
+  box-sizing: content-box;
   padding: 20px;
   font-size: 14px;
   text-decoration: none;
@@ -473,6 +470,9 @@ const NavButton = styled.div`
   border-radius: ${props => props.theme.borderRadius};
   color: ${props => props.theme.colors.text_secondary};
   cursor: pointer;
+  &:hover {
+    color: ${props => props.theme.colors.third};
+  }
   svg {
     font-size: 30px;
     color: ${props => props.theme.colors.text_secondary};
@@ -496,7 +496,6 @@ const AddButton = styled.button`
   width: 80%;
   max-width: calc(768px * 0.8);
   height: 64px;
-  box-sizing: border-box;
   background-color: ${props => props.theme.colors.text_secondary};
   border: none;
   border-radius: ${props => props.theme.borderRadius};
@@ -504,6 +503,10 @@ const AddButton = styled.button`
   font-size: 18px;
   text-decoration: none;
   color: #fff;
+  cursor: pointer;
+  &:hover {
+    color: ${props => props.theme.colors.third};
+  }
   @media ${props => props.theme.tablet} {
     font-size: 20px;
   }
