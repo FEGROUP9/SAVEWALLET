@@ -1,15 +1,13 @@
+import { ChevronRightIcon } from '@heroicons/react/outline'
 import styled from 'styled-components'
 
 // 차트 하단에 출력할 ChartList에서 사용하는 props type 정의
-type ChartListItem = {
-  date: string
-  category: string
-  subCategory: string
-  amount: number
-}
-
 type ChartListProps = {
-  categoryExpenses: ChartListItem[]
+  chartFilter: 'income' | 'expenses' // 수입, 지출 필터링 유형
+  totalAmount: number // 총 수입, 총 지출
+  categoryList: { [category: string]: number } // 카테고리별 금액
+  sortByAmount: (a: [string, number], b: [string, number]) => number // 금액 순 정렬
+  handleShowSubChart: (category: string) => void // 카테고리에 대한 SubChart 출력 함수
 }
 
 // Styled-components 스타일링
@@ -18,85 +16,83 @@ const ChartListWrapper = styled.section`
   flex-direction: column;
   margin-bottom: 20px;
 `
+const ListTotalExpenses = styled.div`
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 3px solid ${props => props.theme.colors.text_secondary};
+  font-family: 'TheJamsil3Regular';
+  font-size: 24px;
+  color: ${props => props.theme.colors.primary};
+  background-color: #fff;
+`
 
-const ChartTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
+const ListItem = styled.li`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid ${props => props.theme.colors.text_secondary};
   font-family: 'TheJamsil1Thin';
   font-size: 20px;
+  background-color: #fff;
 
-  th {
-    font-weight: bold;
-    text-align: center;
+  h3 {
+    flex: 1;
+    position: relative;
+    left: 20px;
+    font-family: 'TheJamsil3Regular';
   }
 
-  th,
-  td {
-    padding: 15px;
-    border: 2px solid ${props => props.theme.colors.text_secondary};
-    text-align: center;
-  }
-
-  td {
-    &:first-child {
-      font-weight: bold;
-    }
-    &:nth-child(3) {
-      font-weight: bold;
-      color: ${props => props.theme.colors.primary};
-    }
-  }
-
-  @media ${props => props.theme.mobile} {
+  p {
+    margin-right: 20px;
   }
 `
 
-export const ChartList: React.FC<ChartListProps> = ({ categoryExpenses }) => {
-  const compareDates = (a: ChartListItem, b: ChartListItem) => {
-    // ChartList의 내역 날짜 비교
-    const dateA = new Date(a.date)
-    const dateB = new Date(b.date)
-    return dateB.getTime() - dateA.getTime()
+const NavIcon = styled(ChevronRightIcon)`
+  width: 30px;
+  cursor: pointer;
+  transition: all 300ms;
+  &:hover {
+    color: ${props => props.theme.colors.primary};
   }
+`
 
-  // categoryExpenses 배열을 날짜 순으로(최신 날짜가 상단으로) 정렬
-  const sortedExpenses = categoryExpenses.sort(compareDates)
-
+// ChartList Component
+export const ChartList: React.FC<ChartListProps> = ({
+  chartFilter,
+  totalAmount,
+  categoryList,
+  sortByAmount,
+  handleShowSubChart
+}) => {
   return (
     <>
       <ChartListWrapper>
-        <ChartTable>
-          <thead>
-            <tr>
-              <th>날짜</th>
-              <th>카테고리</th>
-              <th>사용처</th>
-              <th>금액</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedExpenses.map(expense => {
-              const date = new Date(expense.date)
-              const year = date.getFullYear()
-              const month = date.getMonth() + 1
-              const day = date.getDate()
-              const formattedDate =
-                // month, day를 두 자리 수로 출력
-                `${year}.${month < 10 ? '0' : ''}${month}.${
-                  day < 10 ? '0' : ''
-                }${day}`
-
-              return (
-                <tr key={expense.date}>
-                  <td>{formattedDate}</td>
-                  <td>{expense.category}</td>
-                  <td>{expense.subCategory}</td>
-                  <td>{expense.amount.toLocaleString()}원</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </ChartTable>
+        <ul>
+          {chartFilter === 'income' && (
+            <ListTotalExpenses>
+              <h3>전체</h3>
+              <p>{totalAmount.toLocaleString()}원</p>
+            </ListTotalExpenses>
+          )}
+          {chartFilter === 'expenses' && (
+            <ListTotalExpenses>
+              <h3>전체</h3>
+              <p>{totalAmount.toLocaleString()}원</p>
+            </ListTotalExpenses>
+          )}
+          {Object.entries(categoryList)
+            .sort(sortByAmount)
+            .map(([category, amount]) => (
+              <ListItem key={category}>
+                <h3>{category}</h3>
+                <p>{amount.toLocaleString()}원</p>
+                <NavIcon onClick={() => handleShowSubChart(category)} />
+              </ListItem>
+            ))}
+        </ul>
       </ChartListWrapper>
     </>
   )
