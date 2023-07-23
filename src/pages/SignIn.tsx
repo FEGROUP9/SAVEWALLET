@@ -4,13 +4,12 @@ import logo from '../assets/logo_gradi.png'
 import { NavLink } from 'react-router-dom'
 
 export const SignIn = () => {
-  //배포할때 숨기기 //일단 테스트용으로 작성해놨습니다
-  const REST_API_KEY = '14a02d3245a9eb48f2c0f540947d62bb'
-  //일단 vits 기본 포트로 연결
-  //배포후 배포주소로 다시 작성(카카오에서도 등록해야함)
-  const REDIRECT_URI = 'http://127.0.0.1:3000/kakaoLogin'
+  const [APIKEY, REDIRECT_URI] = [
+    import.meta.env.VITE_APIKEY,
+    import.meta.env.VITE_REDIRECT_URI
+  ]
 
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${APIKEY}&redirect_uri=${REDIRECT_URI}
   `
   const handleSignIn = () => {
     window.location.href = KAKAO_AUTH_URL
