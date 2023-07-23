@@ -18,10 +18,12 @@ export const theme = {
     text_primary: '#000',
     text_secondary: '#2d2c2c',
     background: '#ededed',
-    green: '#64e459',
+    green: '#b4d5cf',
     red: '#fc6262',
     orange: '#fda363',
     blue: '#50b1f7',
+    salmon: '#e4c7b8',
+    lightblue: '#d8e0e8',
     footer_bg: '#e9ecff',
     footer_active: '#6471e9',
     footer_inactive: '#a8a8a9'
