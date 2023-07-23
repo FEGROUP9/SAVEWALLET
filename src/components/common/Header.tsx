@@ -12,11 +12,13 @@ const Wrapper = styled.div`
     margin: auto 0;
     padding: 0 20px;
     cursor: pointer;
+    box-sizing: content-box;
   }
   .pathname {
     vertical-align: baseline;
     font-size: 50px;
     letter-spacing: -2px;
+    font-family: 'TheJamsil5Bold';
   }
   @media ${props => props.theme.mobile} {
     .backwards {

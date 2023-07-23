@@ -6,45 +6,51 @@ import styled from 'styled-components'
 import { Header, Footer, ViewLogs } from 'components/index'
 import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
-import { EditModal } from 'components/index'
 import { useNavigate } from 'react-router-dom'
 import { Expense, CalendarEvent } from 'api/index'
+
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   background-color: #f4f4f5;
+  font-family: 'TheJamsil1Thin', 'TheJamsil5Bold';
   .fc {
     width: 100%;
     background-color: #fff;
   }
   .expense {
-    background-color: #ff4040;
-    border-color: #ff4040;
+    background-color: ${props => props.theme.colors.red};
+    border-color: ${props => props.theme.colors.red};
   }
   .income {
-    border-color: #81c147;
-    background-color: #81c147;
+    border-color: ${props => props.theme.colors.third};
+    background-color: ${props => props.theme.colors.third};
   }
   .time-logged {
     border-color: black;
   }
   .fc-daygrid-event-dot {
-    border-color: #f4968b;
+    border-color: ${props => props.theme.colors.third};
   }
   .fc .fc-daygrid-day-frame {
     overflow: scroll;
   }
   .fc .fc-toolbar.fc-header-toolbar {
     margin: 0;
-    background-color: #f15441;
-    border-radius: 4px 4px 0 0;
+    background-color: ${props => props.theme.colors.primary};
+    border-radius: 12px 12px 0 0;
     justify-content: space-between;
     color: white;
-    font-weight: 600;
+    font-family: 'TheJamsil5Bold';
   }
-
+  .fc-theme-standard th {
+    background-color: ${props => props.theme.colors.third};
+  }
+  .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-top {
+    font-family: 'TheJamsil5Bold';
+  }
   @media ${props => props.theme.mobile} {
     .fc {
       margin: 0 30px;
@@ -72,7 +78,6 @@ const Wrapper = styled.div`
     .fc-theme-standard th {
       height: 16px;
       padding-top: 1px;
-      background: #f4968b;
       border-top: 1px solid #fefefe;
       font-weight: 500;
       font-size: 12px;
@@ -81,8 +86,7 @@ const Wrapper = styled.div`
     }
     // 오늘 날짜 배경색
     .fc .fc-daygrid-day.fc-day-today {
-      background-color: #fff8bd;
-      color: #f15441;
+      background-color: ${props => props.theme.colors.background};
     }
 
     // 날짜별 그리드
@@ -95,7 +99,7 @@ const Wrapper = styled.div`
     .fc .fc-daygrid-day-top {
       flex-direction: row;
       margin-bottom: 1px;
-      font-size: 11px;
+      font-size: 5px;
     }
     // 각 이벤트 요소
     .fc-event {
@@ -104,7 +108,7 @@ const Wrapper = styled.div`
       margin-bottom: 5px;
       border-radius: 4px;
       font-weight: 500;
-      font-size: 11px;
+      font-size: 8px;
       overflow: scroll;
     }
   }
@@ -135,7 +139,6 @@ const Wrapper = styled.div`
     .fc-theme-standard th {
       height: 32px;
       padding-top: 3px;
-      background: #f4968b;
       border-top: 1px solid #fefefe;
       font-weight: 500;
       font-size: 17px;
@@ -144,8 +147,7 @@ const Wrapper = styled.div`
     }
     // 오늘 날짜 배경색
     .fc .fc-daygrid-day.fc-day-today {
-      background-color: #fff8bd;
-      color: #f15441;
+      background-color: ${props => props.theme.colors.background};
     }
 
     // 날짜별 그리드
@@ -198,7 +200,6 @@ const Wrapper = styled.div`
     .fc-theme-standard th {
       height: 32px;
       padding-top: 3px;
-      background: #f4968b;
       border-top: 1px solid #fefefe;
       font-weight: 500;
       font-size: 17px;
@@ -207,8 +208,7 @@ const Wrapper = styled.div`
     }
     // 오늘 날짜 배경색
     .fc .fc-daygrid-day.fc-day-today {
-      background-color: #fff8bd;
-      color: #f15441;
+      background-color: ${props => props.theme.colors.background};
     }
 
     // 날짜별 그리드
@@ -262,7 +262,6 @@ const Wrapper = styled.div`
     .fc-theme-standard th {
       height: 32px;
       padding-top: 3px;
-      background: #f4968b;
       border-top: 1px solid #fefefe;
       font-weight: 500;
       font-size: 17px;
@@ -271,8 +270,7 @@ const Wrapper = styled.div`
     }
     // 오늘 날짜 배경색
     .fc .fc-daygrid-day.fc-day-today {
-      background-color: #fff8bd;
-      color: #f15441;
+      background-color: ${props => props.theme.colors.background};
     }
 
     // 날짜별 그리드
@@ -336,7 +334,7 @@ export const Calendar = () => {
 
         Object.keys(expenses).forEach((date: string) => {
           const monthlyExpenses: Expense[] = expenses[date]
-          console.log(monthlyExpenses)
+
           monthlyExpenses.forEach((expense: Expense) => {
             newEvents.push({
               title: expense.category,
@@ -350,7 +348,7 @@ export const Calendar = () => {
             })
           })
         })
-        console.log(newEvents)
+
         setEvents(newEvents)
       }
     }

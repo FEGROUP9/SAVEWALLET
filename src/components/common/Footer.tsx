@@ -74,7 +74,7 @@ const Title = styled.div`
     cursor: pointer;
   }
   &.active {
-    background-color: #f15441;
+    background-color: ${props => props.theme.colors.primary};
     color: #fff;
     font-weight: 700;
   }

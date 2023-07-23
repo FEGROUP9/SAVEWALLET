@@ -25,7 +25,7 @@ const Wrapper = styled.div`
       &:hover {
         transition: 0.2s ease;
         color: #fff;
-        background-color: #f15441;
+        background-color: ${props => props.theme.colors.third};
         border-color: #f15441;
       }
     }
