@@ -165,7 +165,8 @@ export const SubChart = () => {
                 plugins: {
                   ...barOptions.plugins,
                   datalabels: {
-                    display: true,
+                    // width 값이 770px 이상일 때만 데이터 라벨 출력
+                    display: window.innerWidth >= 770,
                     align: 'end',
                     anchor: 'end',
                     color: '#2d2c2c',

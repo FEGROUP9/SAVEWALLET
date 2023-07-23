@@ -19,40 +19,36 @@ const ChartListWrapper = styled.section`
   margin-bottom: 20px;
 `
 
-const ListItem = styled.li`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  border: 1px solid ${props => props.theme.colors.text_secondary};
+const ChartTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
   font-family: 'TheJamsil1Thin';
   font-size: 20px;
-  background-color: #fff;
 
-  h3 {
-    margin-left: 15px;
+  th {
     font-weight: bold;
+    text-align: center;
   }
 
-  div {
-    p {
-      &:last-child {
-        font-weight: bold;
-        color: ${props => props.theme.colors.primary};
-      }
+  th,
+  td {
+    padding: 15px;
+    border: 2px solid ${props => props.theme.colors.text_secondary};
+    text-align: center;
+  }
+
+  td {
+    &:first-child {
+      font-weight: bold;
+    }
+    &:nth-child(3) {
+      font-weight: bold;
+      color: ${props => props.theme.colors.primary};
     }
   }
 
-  p {
-    margin-right: 15px;
+  @media ${props => props.theme.mobile} {
   }
-
-  /* @media ${props => props.theme.mobile} {
-    div {
-      display: flex;
-      flex-direction: row-reverse;
-    }
-  } */
 `
 
 export const ChartList: React.FC<ChartListProps> = ({ categoryExpenses }) => {
@@ -69,30 +65,38 @@ export const ChartList: React.FC<ChartListProps> = ({ categoryExpenses }) => {
   return (
     <>
       <ChartListWrapper>
-        <ul>
-          {sortedExpenses.map(expense => {
-            const date = new Date(expense.date)
-            const year = date.getFullYear()
-            const month = date.getMonth() + 1
-            const day = date.getDate()
-            const formattedDate =
-              // month, day를 두 자리 수로 출력
-              `${year}.${month < 10 ? '0' : ''}${month}.${
-                day < 10 ? '0' : ''
-              }${day}`
+        <ChartTable>
+          <thead>
+            <tr>
+              <th>날짜</th>
+              <th>카테고리</th>
+              <th>사용처</th>
+              <th>금액</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedExpenses.map(expense => {
+              const date = new Date(expense.date)
+              const year = date.getFullYear()
+              const month = date.getMonth() + 1
+              const day = date.getDate()
+              const formattedDate =
+                // month, day를 두 자리 수로 출력
+                `${year}.${month < 10 ? '0' : ''}${month}.${
+                  day < 10 ? '0' : ''
+                }${day}`
 
-            return (
-              <ListItem key={expense.date}>
-                <h3>{formattedDate}</h3>
-                <div>
-                  <p>{expense.category}</p>
-                  <p>{expense.subCategory}</p>
-                </div>
-                <p>{expense.amount.toLocaleString()}원</p>
-              </ListItem>
-            )
-          })}
-        </ul>
+              return (
+                <tr key={expense.date}>
+                  <td>{formattedDate}</td>
+                  <td>{expense.category}</td>
+                  <td>{expense.subCategory}</td>
+                  <td>{expense.amount.toLocaleString()}원</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </ChartTable>
       </ChartListWrapper>
     </>
   )
