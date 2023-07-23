@@ -8,16 +8,25 @@ const Wrapper = styled.div`
 
   p {
     margin: 0 25px;
-    font-size: 23px;
+    font-size: 27px;
+    font-family: 'TheJamsil3Regular';
   }
 `
 
 const StyledLeftIcon = styled(ChevronLeftIcon)`
-  width: 30px;
+  width: 45px;
+  transition: 300ms;
+  &:hover {
+    color: ${props => props.theme.colors.primary};
+  }
 `
 
 const StyledRightIcon = styled(ChevronRightIcon)`
-  width: 30px;
+  width: 45px;
+  transition: 300ms;
+  &:hover {
+    color: ${props => props.theme.colors.primary};
+  }
 `
 
 export const PeriodRange = ({

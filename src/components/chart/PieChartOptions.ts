@@ -12,8 +12,10 @@ export const pieOptions: ChartOptions<'pie'> = {
         pointStyle: 'rectRounded', // 범례 아이콘 스타일링
         boxWidth: 15, // 범례 아이콘 너비
         font: {
-          size: 15 // 범례 텍스트 폰트 크기
-        }
+          family: 'TheJamsil3Regular',
+          size: 20 // 범례 텍스트 폰트 크기
+        },
+        color: '#2d2c2c'
       },
       position: 'top' // 범례 출력 위치
     },
@@ -21,6 +23,10 @@ export const pieOptions: ChartOptions<'pie'> = {
       // chartjs-plugin-datalabels 라이브러리 지원 속성
       display: true, // 데이터 레이블 표시 여부
       align: 'end', // 데이터 레이블 정렬
+      font: {
+        family: 'TheJamsil3Regular',
+        size: 20
+      },
       color: '#000', // 데이터 레이블 텍스트 색상
       formatter: function (value: any, context: any) {
         // 데이터 레이블 텍스트를 출력하는 형태를 함수로 지정
@@ -39,9 +45,6 @@ export const pieOptions: ChartOptions<'pie'> = {
         }
 
         return `${label}\n${percentage}%`
-      },
-      font: {
-        size: 18 // 데이터 레이블 텍스트 폰트 크기
       }
     }
   }
