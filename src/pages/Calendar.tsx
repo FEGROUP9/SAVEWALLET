@@ -3,48 +3,54 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import _ from 'lodash'
 import styled from 'styled-components'
-import { Header, Footer } from 'components/index'
+import { Header, Footer, ViewLogs } from 'components/index'
 import { useEffect, useState, useRef } from 'react'
 import { getMonthlyExpenses } from 'api/index'
-import { EditModal } from 'components/index'
 import { useNavigate } from 'react-router-dom'
-import { MonthlyExpenses, Expense } from 'api/index'
+import { Expense, CalendarEvent } from 'api/index'
+
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
-  background-color: #f4f4f5;
+  background-color: ${props => props.theme.colors.background};
+  font-family: 'TheJamsil1Thin', 'TheJamsil5Bold';
   .fc {
     width: 100%;
     background-color: #fff;
   }
   .expense {
-    background-color: #ff4040;
-    border-color: #ff4040;
+    background-color: ${props => props.theme.colors.red};
+    border-color: ${props => props.theme.colors.red};
   }
   .income {
-    border-color: #81c147;
-    background-color: #81c147;
+    border-color: ${props => props.theme.colors.third};
+    background-color: ${props => props.theme.colors.third};
   }
   .time-logged {
     border-color: black;
   }
   .fc-daygrid-event-dot {
-    border-color: #f4968b;
+    border-color: ${props => props.theme.colors.third};
   }
   .fc .fc-daygrid-day-frame {
     overflow: scroll;
   }
   .fc .fc-toolbar.fc-header-toolbar {
     margin: 0;
-    background-color: #f15441;
-    border-radius: 4px 4px 0 0;
+    background-color: ${props => props.theme.colors.primary};
+    border-radius: 12px 12px 0 0;
     justify-content: space-between;
     color: white;
-    font-weight: 600;
+    font-family: 'TheJamsil5Bold';
   }
-
+  .fc-theme-standard th {
+    background-color: ${props => props.theme.colors.third};
+  }
+  .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-top {
+    font-family: 'TheJamsil5Bold';
+  }
   @media ${props => props.theme.mobile} {
     .fc {
       margin: 0 30px;
@@ -72,7 +78,6 @@ const Wrapper = styled.div`
     .fc-theme-standard th {
       height: 16px;
       padding-top: 1px;
-      background: #f4968b;
       border-top: 1px solid #fefefe;
       font-weight: 500;
       font-size: 12px;
@@ -81,8 +86,7 @@ const Wrapper = styled.div`
     }
     // 오늘 날짜 배경색
     .fc .fc-daygrid-day.fc-day-today {
-      background-color: #fff8bd;
-      color: #f15441;
+      background-color: ${props => props.theme.colors.background};
     }
 
     // 날짜별 그리드
@@ -95,7 +99,7 @@ const Wrapper = styled.div`
     .fc .fc-daygrid-day-top {
       flex-direction: row;
       margin-bottom: 1px;
-      font-size: 11px;
+      font-size: 5px;
     }
     // 각 이벤트 요소
     .fc-event {
@@ -104,7 +108,7 @@ const Wrapper = styled.div`
       margin-bottom: 5px;
       border-radius: 4px;
       font-weight: 500;
-      font-size: 11px;
+      font-size: 8px;
       overflow: scroll;
     }
   }
@@ -135,7 +139,6 @@ const Wrapper = styled.div`
     .fc-theme-standard th {
       height: 32px;
       padding-top: 3px;
-      background: #f4968b;
       border-top: 1px solid #fefefe;
       font-weight: 500;
       font-size: 17px;
@@ -144,8 +147,7 @@ const Wrapper = styled.div`
     }
     // 오늘 날짜 배경색
     .fc .fc-daygrid-day.fc-day-today {
-      background-color: #fff8bd;
-      color: #f15441;
+      background-color: ${props => props.theme.colors.background};
     }
 
     // 날짜별 그리드
@@ -198,7 +200,6 @@ const Wrapper = styled.div`
     .fc-theme-standard th {
       height: 32px;
       padding-top: 3px;
-      background: #f4968b;
       border-top: 1px solid #fefefe;
       font-weight: 500;
       font-size: 17px;
@@ -207,8 +208,7 @@ const Wrapper = styled.div`
     }
     // 오늘 날짜 배경색
     .fc .fc-daygrid-day.fc-day-today {
-      background-color: #fff8bd;
-      color: #f15441;
+      background-color: ${props => props.theme.colors.background};
     }
 
     // 날짜별 그리드
@@ -262,7 +262,6 @@ const Wrapper = styled.div`
     .fc-theme-standard th {
       height: 32px;
       padding-top: 3px;
-      background: #f4968b;
       border-top: 1px solid #fefefe;
       font-weight: 500;
       font-size: 17px;
@@ -271,8 +270,7 @@ const Wrapper = styled.div`
     }
     // 오늘 날짜 배경색
     .fc .fc-daygrid-day.fc-day-today {
-      background-color: #fff8bd;
-      color: #f15441;
+      background-color: ${props => props.theme.colors.background};
     }
 
     // 날짜별 그리드
@@ -304,61 +302,58 @@ const initialYear = date.getFullYear()
 const initialMonth = date.getMonth() + 1
 
 export const Calendar = () => {
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useState<CalendarEvent[]>([])
   //캘린더 이전/다음달 변경시 년/월 정보
   const [year, setYear] = useState(initialYear)
   const [month, setMonth] = useState(initialMonth)
 
-  const [monthExpenses, setMonthExpenses] = useState<MonthlyExpenses[]>([])
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [selectedExpense] = useState<Expense>({} as Expense)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedExpense, setSelectedExpense] = useState({})
 
   const navigate = useNavigate()
-  const calendarRef = useRef(null)
+  const calendarRef = useRef<FullCalendar>(null)
   const id = localStorage.getItem('id')
   const USERID = `team9-${id}`
 
   const regex = /[^0-9]/g
+  const closeModal = () => setModalOpen(false)
 
-  const handleUpdate = (updatedExpense: Expense) => {
-    const updatedMonthExpenses = monthExpenses.map(dateExpenses => {
-      const updatedExpenses = dateExpenses.map(expense =>
-        expense._id === updatedExpense._id ? updatedExpense : expense
-      )
-
-      return { ...dateExpenses, [updatedExpenses[0].date]: updatedExpenses }
-    })
-    setMonthExpenses(updatedMonthExpenses)
-  }
   useEffect(() => {
     /**날짜별 소비 달력 표시 함수*/
-    if (id) {
-      const renderDailyExpenses = async () => {
-        let expenses = await getMonthlyExpenses(year, month, USERID)
-
-        // Object.values(expenses).map((i: Expense[]) =>
-        //   i.map(v => {
-        //     setEvents(prevEvents => [
-        //       ...prevEvents,
-        //       {
-        //         title: v.category,
-        //         date: v.date.replace('Z', '')
-        //       },
-        //       {
-        //         allDay: true,
-        //         title: v.amount.toLocaleString() + '원',
-        //         start: v.date.replace('Z', '')
-        //       }
-        //     ])
-        //   })
-        // )
+    const renderDailyExpenses = async () => {
+      if (!id) {
+        alert('로그인이 필요합니다.')
+        navigate('/signin')
+        return
       }
-      renderDailyExpenses()
+
+      if (id) {
+        const expenses = await getMonthlyExpenses(year, month, USERID)
+
+        const newEvents: CalendarEvent[] = []
+
+        Object.keys(expenses).forEach((date: string) => {
+          const monthlyExpenses: Expense[] = expenses[date]
+
+          monthlyExpenses.forEach((expense: Expense) => {
+            newEvents.push({
+              title: expense.category,
+              date: expense.date.replace('Z', '')
+            })
+
+            newEvents.push({
+              title: `${expense.amount.toLocaleString()}원`,
+              allDay: true,
+              start: expense.date.replace('Z', '')
+            })
+          })
+        })
+
+        setEvents(newEvents)
+      }
     }
-    if (!id) {
-      alert('로그인이 필요합니다.')
-      navigate('/signin')
-    }
+
+    renderDailyExpenses()
   }, [year, month, id])
   return (
     <>
@@ -388,22 +383,22 @@ export const Calendar = () => {
             prevBtn: {
               icon: 'chevron-left',
               click: () => {
-                if (calendarRef) {
-                  // calendarRef.current.getApi().prev()
-                  // const calendarMonth = _.get(
-                  //   calendarRef.current.getApi(), //DOM의 정보 가져옴
-                  //   'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
-                  // )
-                  // setYear(
-                  //   parseInt(
-                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
-                  //   )
-                  // )
-                  // setMonth(
-                  //   parseInt(
-                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
-                  //   )
-                  // )
+                if (calendarRef.current?.getApi()) {
+                  calendarRef.current.getApi().prev()
+                  const calendarMonth = _.get(
+                    calendarRef.current.getApi(), //DOM의 정보 가져옴
+                    'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
+                  )
+                  setYear(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
+                    )
+                  )
+                  setMonth(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
+                    )
+                  )
                   setEvents([])
                 }
               }
@@ -411,38 +406,38 @@ export const Calendar = () => {
             nextBtn: {
               icon: 'chevron-right',
               click: () => {
-                if (calendarRef) {
-                  // calendarRef.current.getApi().next()
-                  // const calendarMonth = _.get(
-                  //   calendarRef.current.getApi(), //DOM의 정보 가져옴
-                  //   'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
-                  // )
-                  // setYear(
-                  //   parseInt(
-                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
-                  //   )
-                  // )
-                  // setMonth(
-                  //   parseInt(
-                  //     calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
-                  //   )
-                  // )
+                if (calendarRef.current?.getApi()) {
+                  calendarRef.current.getApi().next()
+                  const calendarMonth = _.get(
+                    calendarRef.current.getApi(), //DOM의 정보 가져옴
+                    'currentDataManager.data.viewTitle' //보여지는 달에 대한 정보
+                  )
+                  setYear(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[0]
+                    )
+                  )
+                  setMonth(
+                    parseInt(
+                      calendarMonth.split(' ').map(i => i.replace(regex, ''))[1]
+                    )
+                  )
                   setEvents([])
                 }
               }
             }
           }}
-          eventClick={() => {
-            setEditModalOpen(true)
-            // handleEditExpense()
+          eventClick={event => {
+            setModalOpen(true)
+            console.log(event.event)
+            setSelectedExpense(event.event)
           }}
           // 모달 [컨텐츠 - 수정,삭제,취소 버튼]
         />
-        {editModalOpen && (
-          <EditModal
-            closeModal={() => setEditModalOpen(false)}
+        {modalOpen && (
+          <ViewLogs
+            closeModal={closeModal}
             expense={selectedExpense}
-            onUpdateExpense={handleUpdate}
           />
         )}
       </Wrapper>

@@ -156,18 +156,20 @@ export default function ListItems() {
                   const expenses = monthExpenses[date]
                   const { income, spend } = sumAmountByDate(monthExpenses, date)
                   return (
-                    <div key={date}>
+                    <div
+                      key={date}
+                      className="divider">
                       <DateRow>
                         <MonthDate>
                           {monthFilter}월 {date}일
                         </MonthDate>
-                        <Title style={{ color: '#81c147' }}>
-                          수입: {formatNumber(income)}원
+                        <Title style={{ color: '#6471e9' }}>
+                          수입 : {formatNumber(income)}원
                         </Title>
-                        <Title style={{ color: '#ff4040' }}>
-                          지출: {formatNumber(spend)}원
+                        <Title style={{ color: '#fc6262' }}>
+                          지출 : {formatNumber(spend)}원
                         </Title>
-                        <Title>합계: {formatNumber(income + spend)}원</Title>
+                        <Title>합계 : {formatNumber(income + spend)}원</Title>
                       </DateRow>
                       {expenses.map((expense, index) => (
                         <React.Fragment key={expense._id}>
@@ -176,16 +178,16 @@ export default function ListItems() {
                               {getCategoryIncluded(expense) || '카테고리'}
                             </Category>
                             <History>
-                              내역:
-                              {(getCategoryExcluded(expense) || '없음').replace(
-                                '.',
-                                ''
-                              )}
+                              내역 :
+                              {' ' +
+                                (
+                                  getCategoryExcluded(expense) || '없음'
+                                ).replace('.', '')}
                             </History>
                             <Expenditure
                               style={{
                                 color:
-                                  expense.amount > 0 ? '#81c147' : '#ff4040'
+                                  expense.amount > 0 ? '#6471e9' : '#fc6262'
                               }}>
                               {formatNumber(expense.amount)}원
                             </Expenditure>
@@ -201,9 +203,7 @@ export default function ListItems() {
                             />
                           </CategoryRow>
                           {index < expenses.length - 1 && (
-                            <LineContainer>
-                              <Line />
-                            </LineContainer>
+                            <LineContainer>{/* <Line /> */}</LineContainer>
                           )}
                         </React.Fragment>
                       ))}
@@ -228,56 +228,65 @@ export default function ListItems() {
   )
 }
 const Wrapper = styled.div`
-  background-color: #f4f4f5;
+  background-color: ${props => props.theme.colors.background};
+  .divider {
+    border-top: 1px solid #c4c4c4;
+    &:first-child {
+      border: none;
+    }
+    &:last-child {
+      border-bottom: 1px solid #c4c4c4;
+    }
+  }
 `
 
 const ExpenseList = styled.div`
   width: 60vw;
   height: 75vh;
-  border: 2px solid black;
-  margin: 50px auto;
+  border: 3px solid ${props => props.theme.colors.primary};
+  margin: 20px auto;
   margin-bottom: 0px;
   overflow: auto;
-  background-color: white;
-  border-radius: 5px;
+  background-color: #fff;
+  border-radius: 12px;
+  align-items: center;
 
-  @media ${theme.laptop} {
+  @media ${props => props.theme.laptop} {
     width: 50vw;
     height: 75vh;
   }
 
-  @media ${theme.desktop} {
+  @media ${props => props.theme.desktop} {
     width: 60vw;
     height: 75vh;
   }
-  @media ${theme.tablet} {
+  @media ${props => props.theme.tablet} {
     width: 70vw;
     height: 70vh;
   }
 
-  @media ${theme.mobile} {
+  @media ${props => props.theme.mobile} {
     width: 90vw;
     height: 70vh;
   }
 `
 
 const DateRow = styled.div`
-  border-top: 2px solid grey;
-  border-bottom: 2px solid grey;
-  display: flex;
-  margin: -2px;
+  /* border-bottom: 2px solid #c4c4c4; */
   padding: 10px;
+  box-sizing: content-box;
+  display: flex;
   height: 25px;
   align-items: center;
   justify-content: flex-end;
-  padding: 10px;
 `
 
 const MonthDate = styled.div`
   margin-right: auto;
-  margin-left: 20px;
+  margin-left: 10px;
   font-weight: bold;
-  font-size: 16px;
+  padding: 10px;
+  font-family: 'TheJamsil5Bold';
 
   @media ${theme.mobile} {
     font-size: 14px;
@@ -293,22 +302,18 @@ const CategoryRow = styled.div`
 const Title = styled.span`
   font-size: 13px;
   width: 120px;
-
-  @media ${theme.desktop} {
-    width: 100px;
-  }
-
-  @media ${theme.laptop} {
+  font-family: 'TheJamsil3Regular';
+  @media ${props => props.theme.laptop} {
     width: 110px;
   }
 
-  @media ${theme.tablet} {
-    width: 100px;
+  @media ${props => props.theme.tablet} {
+    width: 110px;
   }
 
-  @media ${theme.mobile} {
-    font-size: 12px;
-    width: 90px;
+  @media ${props => props.theme.mobile} {
+    font-size: 11px;
+    width: 110px;
   }
 `
 
@@ -318,19 +323,19 @@ const Category = styled.div`
   justify-content: center;
   font-weight: 400;
   margin-right: 10px;
-  color: white;
+  color: #fff;
   font-size: 13px;
   width: 60px;
   height: 20px;
-  background-color: #81c147;
+  background-color: ${props => props.theme.colors.green};
   border-radius: 15px;
 `
 
 const History = styled.div`
   font-weight: 300;
   font-size: 13px;
-
-  @media ${theme.mobile} {
+  font-family: 'TheJamsil3Regular';
+  @media ${props => props.theme.mobile} {
     font-size: 12px;
   }
 `
@@ -338,12 +343,11 @@ const History = styled.div`
 const Expenditure = styled.div`
   margin-left: auto;
   font-weight: bold;
-
   margin-right: 10px;
   font-size: 13px;
   font-weight: 500;
 
-  @media ${theme.mobile} {
+  @media ${props => props.theme.mobile} {
     font-size: 12px;
   }
 `
@@ -355,11 +359,11 @@ const ErrorMsg = styled.div`
   justify-content: center;
   margin-top: 50px;
 `
-const Line = styled.hr`
-  width: 90%;
-  border: 1px solid grey;
-  margin: auto 0;
-`
+// const Line = styled.hr`
+//   width: 90%;
+//   border: 1px solid #c4c4c4;
+//   margin: auto 0;
+// `
 const LineContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -370,7 +374,7 @@ const ModifyButton = styled.button`
   align-items: center;
   justify-content: center;
   border: none;
-  background-color: white;
+  background-color: #fff;
   svg {
     width: 20px;
     &:hover {

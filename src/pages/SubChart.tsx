@@ -8,14 +8,16 @@ import {
   Title,
   Tooltip,
   Legend,
-  ChartData,
-  ChartOptions
+  ChartData
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+import { barOptions, barLabels } from 'components/subchart/BarChartOptions'
 import { fetchExpenses } from 'src/api/FetchCategoryExpenses'
 import { useRecoilValue } from 'recoil'
 import { selectedCategoryState } from 'recoil/SelectedCategoryState'
+import { ChartList } from 'components/subchart/ChartList'
+import { theme } from 'style/theme'
 import styled from 'styled-components'
 
 // Chart.js, react-chartjs-2
@@ -23,60 +25,28 @@ import styled from 'styled-components'
 // react-chartjs-2 컴포넌트를 통해 차트에 사용할 수 있음
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-// Chart labels - Vertical Bar Chart
-const labels = ['3월', '4월', '5월', '6월', '7월']
-
-// Chart Data 속성 지정 - Vertical Bar Chart
-const options: ChartOptions<'bar'> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    y: {
-      grid: {
-        display: false
-      }
-    }
-  },
-  plugins: {
-    legend: {
-      position: 'top' as const,
-      labels: {
-        usePointStyle: true,
-        pointStyle: 'rectRounded',
-        boxWidth: 15,
-        font: {
-          size: 15
-        }
-      }
-    },
-    title: {
-      display: true,
-      text: '월별 수입 및 지출',
-      color: '#000',
-      font: {
-        size: 25
-      }
-    }
-  }
-}
-
 // styled-components 스타일링
 const Wrapper = styled.main`
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
   width: 100%;
-  height: 600px;
-  background-color: beige;
+  background-color: ${props => props.theme.colors.background};
+`
+
+const ChartTitle = styled.h1`
+  display: inline-block;
+  margin: 30px 15px;
+  font-family: 'TheJamsil5Bold';
+  font-weight: 700;
+  font-size: 30px;
+  color: ${props => props.theme.colors.text_primary};
 `
 
 const ChartContainer = styled.figure`
-  margin-bottom: 30px;
-`
-
-const ChartList = styled.section``
-
-const ListItem = styled.li`
-  display: flex;
-  justify-content: space-around;
+  margin: 30px 15px 30px;
+  width: 100%;
+  height: 600px;
 `
 
 // SubChart Page Component
@@ -86,9 +56,11 @@ export const SubChart = () => {
     (number | [number, number] | null)[]
   > | null>(null)
 
+  // recoil State를 사용하여 선택된 카테고리 가져오기
   const selectedCategory = useRecoilValue(selectedCategoryState)
   const [categoryExpenses, setCategoryExpenses] = useState<any[]>([])
 
+  // 카테고리 분할 함수
   const splitCategory = category => {
     const [primary, secondary] = category.split('.')
     return { primary, secondary: secondary || '' }
@@ -97,8 +69,10 @@ export const SubChart = () => {
   useEffect(() => {
     const fetchSubChartData = async () => {
       try {
+        // 수입, 지출 데이터 가져오기
         const expensesData = await fetchExpenses()
 
+        // 차트 하단에 출력할 ChartList에 필요한 데이터 형식 변환
         const transformedExpensesData = expensesData.map(item => {
           const { amount, category, date } = item
           const { primary, secondary } = splitCategory(category)
@@ -111,6 +85,7 @@ export const SubChart = () => {
           }
         })
 
+        // 월별 수입, 지출 그룹화
         const groupedData: {
           [key: string]: { income: number; expense: number }
         } = {}
@@ -133,6 +108,7 @@ export const SubChart = () => {
           }
         })
 
+        // 선택된 카테고리에 해당하는 데이터 Filtering
         const filteredCategory = transformedExpensesData.filter(item => {
           const { primary } = splitCategory(item.category)
           if (
@@ -143,38 +119,32 @@ export const SubChart = () => {
           }
           return false
         })
-        console.log('selected category는?:', selectedCategory)
-        console.log('filtered category는?:', filteredCategory)
 
-        // const incomes = transformedExpensesData.filter(item => item.amount >= 0)
-        // const expenses = transformedExpensesData.filter(item => item.amount < 0)
-
+        // Chart Data - Vertical Bar Chart
         const data: ChartData<'bar'> = {
-          labels: labels,
+          labels: barLabels,
           datasets: [
             {
               label: '수입',
-              data: labels.map(
+              data: barLabels.map(
                 (_, index) => groupedData[index + 2]?.income || 0
               ),
-              backgroundColor: 'rgba(53, 162, 235, 0.5)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: theme.colors.primary,
               borderWidth: 1
             },
             {
               label: '지출',
-              data: labels.map(
+              data: barLabels.map(
                 (_, index) => groupedData[index + 2]?.expense || 0
               ),
-              backgroundColor: 'rgba(255, 99, 132, 0.5)'
+              backgroundColor: theme.colors.red,
+              borderWidth: 1
             }
           ]
         }
 
         setCategoryExpenses(filteredCategory)
         setSubChartData(data)
-        console.log(expensesData)
-        console.log(categoryExpenses)
       } catch (error) {
         console.log(error)
       }
@@ -186,20 +156,22 @@ export const SubChart = () => {
     <>
       <Header />
       <Wrapper>
-        <ChartContainer style={{ width: '100%', height: '600px' }}>
+        <ChartTitle>월별 수입 및 지출</ChartTitle>
+        <ChartContainer>
           {subChartData && (
             <Bar
               options={{
-                ...options,
+                ...barOptions,
                 plugins: {
-                  ...options.plugins,
+                  ...barOptions.plugins,
                   datalabels: {
                     display: true,
                     align: 'end',
                     anchor: 'end',
-                    color: '#000',
+                    color: '#2d2c2c',
                     font: {
-                      size: 15
+                      family: 'TheJamsil3Regular',
+                      size: 20
                     },
                     formatter: value => {
                       if (value === 0 || value === null) {
@@ -215,18 +187,7 @@ export const SubChart = () => {
             />
           )}
         </ChartContainer>
-        <ChartList>
-          <ul>
-            {categoryExpenses.map(expense => (
-              <ListItem key={expense.date}>
-                <h3>{expense.date.split('T')[0]}</h3>
-                <p>{expense.category}</p>
-                <p>{expense.subCategory}서브 카테고리 부분</p>
-                <p>{expense.amount.toLocaleString()}원</p>
-              </ListItem>
-            ))}
-          </ul>
-        </ChartList>
+        <ChartList categoryExpenses={categoryExpenses} />
       </Wrapper>
       <Footer />
     </>

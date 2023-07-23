@@ -40,7 +40,7 @@ const MonthButton = styled.button`
   align-items: center;
   justify-content: center;
   border: none;
-  background-color: #f4f4f5;
+  background-color: ${props => props.theme.colors.background};
   svg {
     width: 20px;
     &:hover {
@@ -50,6 +50,7 @@ const MonthButton = styled.button`
 `
 
 const CurMonth = styled.div`
+  font-family: 'TheJamsil5Bold';
   font-weight: bold;
   font-size: 30px;
 `
