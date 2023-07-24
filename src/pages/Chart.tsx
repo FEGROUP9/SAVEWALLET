@@ -53,6 +53,10 @@ const ChartContainer = styled.figure`
 // Chart Page Component
 export const Chart = () => {
   const navigate = useNavigate()
+  const id = localStorage.getItem('id')
+  const userId = `team9-${id}`
+  const keyword = ''
+
   const [chartData, setChartData] = useState<ChartData<'pie'> | null>(null)
 
   // 월별 Filtering - RecoilState
@@ -81,7 +85,7 @@ export const Chart = () => {
     const fetchChartData = async () => {
       try {
         // 모든 수입, 지출 데이터 가져오기
-        const expensesData = await fetchExpenses()
+        const expensesData = await fetchExpenses(keyword, userId)
 
         // 수입, 지출 데이터 Filtering - input button
         const filteredData = expensesData.filter(
