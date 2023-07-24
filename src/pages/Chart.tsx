@@ -107,7 +107,7 @@ export const Chart = () => {
         // category별로 데이터 집계
         const aggregatedData = {}
         filteredData.forEach(item => {
-          const categoryName = item.category
+          const categoryName = item.category.split('.')[0]
           const amount = Math.abs(Number(item.amount))
 
           if (aggregatedData[categoryName]) {
