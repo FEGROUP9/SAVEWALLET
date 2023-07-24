@@ -101,9 +101,6 @@ export const Chart = () => {
           if (window.confirm(confirmMessage)) {
             navigate('/logaccount')
           }
-
-          setChartData(null)
-          setCategoryList({})
           return
         }
 

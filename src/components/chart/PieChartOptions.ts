@@ -40,7 +40,7 @@ export const pieOptions: ChartOptions<'pie'> = {
         )
 
         if (total === 0) {
-          return ''
+          return `${label}\n0%`
         }
 
         const percentage = ((value / total) * 100).toFixed(1)
