@@ -38,6 +38,11 @@ export const pieOptions: ChartOptions<'pie'> = {
           (sum: number, dataValue: number) => sum + dataValue,
           0
         )
+
+        if (total === 0) {
+          return ''
+        }
+
         const percentage = ((value / total) * 100).toFixed(1)
 
         if (parseFloat(percentage) < 5) {
