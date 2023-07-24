@@ -108,7 +108,7 @@ export const Chart = () => {
         const aggregatedData = {}
         filteredData.forEach(item => {
           const categoryName = item.category
-          const amount = Math.abs(item.amount)
+          const amount = Math.abs(Number(item.amount))
 
           if (aggregatedData[categoryName]) {
             aggregatedData[categoryName] += amount

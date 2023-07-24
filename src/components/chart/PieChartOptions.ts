@@ -44,11 +44,6 @@ export const pieOptions: ChartOptions<'pie'> = {
         }
 
         const percentage = ((value / total) * 100).toFixed(1)
-        console.log('퍼센트', percentage)
-        console.log('value는? ', value)
-        console.log('total은?', total)
-        console.log(typeof value)
-        console.log(typeof total)
 
         if (parseFloat(percentage) < 5) {
           return '' // 차트 항목이 5% 미만인 경우 데이터 레이블 표시 X
