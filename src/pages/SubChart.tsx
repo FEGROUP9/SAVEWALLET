@@ -51,6 +51,10 @@ const ChartContainer = styled.figure`
 
 // SubChart Page Component
 export const SubChart = () => {
+  const id = localStorage.getItem('id')
+  const userId = `team9-${id}`
+  const keyword = ''
+
   const [subChartData, setSubChartData] = useState<ChartData<
     'bar',
     (number | [number, number] | null)[]
@@ -70,7 +74,7 @@ export const SubChart = () => {
     const fetchSubChartData = async () => {
       try {
         // 수입, 지출 데이터 가져오기
-        const expensesData = await fetchExpenses()
+        const expensesData = await fetchExpenses(keyword, userId)
 
         // 차트 하단에 출력할 ChartList에 필요한 데이터 형식 변환
         const transformedExpensesData = expensesData.map(item => {
