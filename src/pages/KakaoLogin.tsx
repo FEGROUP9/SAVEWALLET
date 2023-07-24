@@ -4,8 +4,7 @@ import { useEffect } from 'react'
 
 const [APIKEY, REDIRECT_URI] = [
   import.meta.env.VITE_APIKEY,
-  // import.meta.env.VITE_REDIRECT_URI,
-  'http://127.0.0.1:3000/kakaoLogin'
+  import.meta.env.VITE_REDIRECT_URI
 ]
 
 const request = axios.create({
